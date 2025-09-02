@@ -64,7 +64,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 19 "atv3_sin.y"
+#line 22 "atv3_sin.y"
 
     char* str;
     double num;
@@ -72,7 +72,7 @@ union YYSTYPE
     struct {
         char* comando;
         struct CampoNode* campos;
-    } programa_completo;
+    } lista_comando_completo;
 
 #line 78 "atv3_sin.tab.h"
 

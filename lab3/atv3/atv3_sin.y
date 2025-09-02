@@ -11,8 +11,11 @@ void yylex_destroy(void);
 
 extern char* yytext;
 
-CampoNode *lista_completa = NULL;
-CampoNode **ultimo = &lista_completa;
+CampoNode *lista_campo = NULL;
+CampoNode **ultimo_campo = &lista_campo;
+
+ComandoNode *lista_comandos = NULL;
+ComandoNode **ultimo_comando = &lista_comandos;
 
 %}
 
@@ -23,10 +26,10 @@ CampoNode **ultimo = &lista_completa;
     struct {
         char* comando;
         struct CampoNode* campos;
-    } programa_completo;
+    } lista_comando_completo;
 }
 
-%type <programa_completo> programa
+%type <lista_comando_completo> lista_comando
 %type <str> comando
 %type <campo_node> linhas
 %type <campo_node> linha
@@ -36,10 +39,20 @@ CampoNode **ultimo = &lista_completa;
 
 %%
 
-programa : comando linhas
+
+programa : lista_comando programa
+    | lista_comando
+;
+
+lista_comando : comando linhas
     {
-        $$.comando = $1;
-        $$.campos = $2;
+        ComandoNode *comando = createComandNode($1, lista_campo);
+        addComandToList(comando, &ultimo_comando);
+        
+        if(lista_comandos == NULL) lista_comandos = comando;
+
+        lista_campo = NULL;
+        ultimo_campo = &lista_campo;
     }
 ;
 
@@ -47,8 +60,8 @@ linhas : linhas linha
     {
         // Adiciona à lista ligada
         if ($2 != (CampoNode*) NULL) {
-            *ultimo = $2;
-            ultimo = &($2->proximo);
+            *ultimo_campo = $2;
+            ultimo_campo = &($2->proximo);
         }
         else {
             printf("ERRO!\n");
@@ -59,8 +72,8 @@ linhas : linhas linha
     | linha
     {
         if ($1 != (CampoNode*) NULL) {
-            *ultimo = $1;
-            ultimo = &($1->proximo);
+            *ultimo_campo = $1;
+            ultimo_campo = &($1->proximo);
         }
         else {
             printf("ERRO!\n");
@@ -86,9 +99,8 @@ linha : LINHA_VALIDA
 comando: LINHA_COMANDO
     {
         char* comando = extractHTTPCommand($1);
-        printf("Comando HTTP: %s\n", comando);
         free($1);
-        free(comando);
+        $$ = comando;
     }
 ;
 %%
@@ -101,9 +113,8 @@ void yyerror(const char *msg) {
 
 int main(){
     yyparse();
-    imprimirLista(lista_completa);
-    liberarLista(lista_completa);
-
+    imprimirLista(lista_comandos);
+    liberarLista(lista_comandos);
     yylex_destroy();
 
     return 0;

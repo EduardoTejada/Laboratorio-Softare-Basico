@@ -81,11 +81,14 @@ void yylex_destroy(void);
 
 extern char* yytext;
 
-CampoNode *lista_completa = NULL;
-CampoNode **ultimo = &lista_completa;
+CampoNode *lista_campo = NULL;
+CampoNode **ultimo_campo = &lista_campo;
+
+ComandoNode *lista_comandos = NULL;
+ComandoNode **ultimo_comando = &lista_comandos;
 
 
-#line 89 "atv3_sin.tab.c"
+#line 92 "atv3_sin.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -120,9 +123,10 @@ enum yysymbol_kind_t
   YYSYMBOL_LINHA_COMANDO = 4,              /* LINHA_COMANDO  */
   YYSYMBOL_YYACCEPT = 5,                   /* $accept  */
   YYSYMBOL_programa = 6,                   /* programa  */
-  YYSYMBOL_linhas = 7,                     /* linhas  */
-  YYSYMBOL_linha = 8,                      /* linha  */
-  YYSYMBOL_comando = 9                     /* comando  */
+  YYSYMBOL_lista_comando = 7,              /* lista_comando  */
+  YYSYMBOL_linhas = 8,                     /* linhas  */
+  YYSYMBOL_linha = 9,                      /* linha  */
+  YYSYMBOL_comando = 10                    /* comando  */
 };
 typedef enum yysymbol_kind_t yysymbol_kind_t;
 
@@ -448,18 +452,18 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  4
+#define YYFINAL  5
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   3
+#define YYLAST   5
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  5
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  5
+#define YYNNTS  6
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  6
+#define YYNRULES  8
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  9
+#define YYNSTATES  11
 
 /* YYMAXUTOK -- Last valid token kind.  */
 #define YYMAXUTOK   259
@@ -508,7 +512,7 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    39,    39,    46,    59,    73,    86
+       0,    43,    43,    44,    47,    59,    73,    87,   100
 };
 #endif
 
@@ -525,7 +529,8 @@ static const char *yysymbol_name (yysymbol_kind_t yysymbol) YY_ATTRIBUTE_UNUSED;
 static const char *const yytname[] =
 {
   "\"end of file\"", "error", "\"invalid token\"", "LINHA_VALIDA",
-  "LINHA_COMANDO", "$accept", "programa", "linhas", "linha", "comando", YY_NULLPTR
+  "LINHA_COMANDO", "$accept", "programa", "lista_comando", "linhas",
+  "linha", "comando", YY_NULLPTR
 };
 
 static const char *
@@ -549,7 +554,8 @@ yysymbol_name (yysymbol_kind_t yysymbol)
    STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      -4,    -5,     1,    -1,    -5,    -5,    -1,    -5,    -5
+      -4,    -5,     1,    -4,    -1,    -5,    -5,    -5,    -1,    -5,
+      -5
 };
 
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -557,19 +563,20 @@ static const yytype_int8 yypact[] =
    means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       0,     6,     0,     0,     1,     5,     2,     4,     3
+       0,     8,     0,     3,     0,     1,     2,     7,     4,     6,
+       5
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-      -5,    -5,    -5,    -3,    -5
+      -5,     0,    -5,    -5,    -3,    -5
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-       0,     2,     6,     7,     3
+       0,     2,     3,     8,     9,     4
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -577,31 +584,32 @@ static const yytype_int8 yydefgoto[] =
    number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-       1,     4,     5,     8
+       1,     5,     7,     6,     0,    10
 };
 
 static const yytype_int8 yycheck[] =
 {
-       4,     0,     3,     6
+       4,     0,     3,     3,    -1,     8
 };
 
 /* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
    state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,     4,     6,     9,     0,     3,     7,     8,     8
+       0,     4,     6,     7,    10,     0,     6,     3,     8,     9,
+       9
 };
 
 /* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr1[] =
 {
-       0,     5,     6,     7,     7,     8,     9
+       0,     5,     6,     6,     7,     8,     8,     9,    10
 };
 
 /* YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr2[] =
 {
-       0,     2,     2,     2,     1,     1,     1
+       0,     2,     2,     1,     2,     2,     1,     1,     1
 };
 
 
@@ -1064,22 +1072,28 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-  case 2: /* programa: comando linhas  */
-#line 40 "atv3_sin.y"
+  case 4: /* lista_comando: comando linhas  */
+#line 48 "atv3_sin.y"
     {
-        (yyval.programa_completo).comando = (yyvsp[-1].str);
-        (yyval.programa_completo).campos = (yyvsp[0].campo_node);
+        ComandoNode *comando = createComandNode((yyvsp[-1].str), lista_campo);
+        addComandToList(comando, &ultimo_comando);
+        
+        if(lista_comandos == NULL) lista_comandos = comando;
+
+        lista_campo = NULL;
+        ultimo_campo = &lista_campo;
     }
-#line 1074 "atv3_sin.tab.c"
+#line 1087 "atv3_sin.tab.c"
     break;
 
-  case 3: /* linhas: linhas linha  */
-#line 47 "atv3_sin.y"
+  case 5: /* linhas: linhas linha  */
+#line 60 "atv3_sin.y"
     {
         // Adiciona à lista ligada
+        
         if ((yyvsp[0].campo_node) != (CampoNode*) NULL) {
-            *ultimo = (yyvsp[0].campo_node);
-            ultimo = &((yyvsp[0].campo_node)->proximo);
+            *ultimo_campo = (yyvsp[0].campo_node);
+            ultimo_campo = &((yyvsp[0].campo_node)->proximo);
         }
         else {
             printf("ERRO!\n");
@@ -1087,15 +1101,15 @@ yyreduce:
         }
         (yyval.campo_node) = (yyvsp[-1].campo_node); // Retorna a cabeça da lista
     }
-#line 1091 "atv3_sin.tab.c"
+#line 1105 "atv3_sin.tab.c"
     break;
 
-  case 4: /* linhas: linha  */
-#line 60 "atv3_sin.y"
+  case 6: /* linhas: linha  */
+#line 74 "atv3_sin.y"
     {
         if ((yyvsp[0].campo_node) != (CampoNode*) NULL) {
-            *ultimo = (yyvsp[0].campo_node);
-            ultimo = &((yyvsp[0].campo_node)->proximo);
+            *ultimo_campo = (yyvsp[0].campo_node);
+            ultimo_campo = &((yyvsp[0].campo_node)->proximo);
         }
         else {
             printf("ERRO!\n");
@@ -1103,11 +1117,11 @@ yyreduce:
         }
         (yyval.campo_node) = (yyvsp[0].campo_node); // Retorna o primeiro elemento
     }
-#line 1107 "atv3_sin.tab.c"
+#line 1121 "atv3_sin.tab.c"
     break;
 
-  case 5: /* linha: LINHA_VALIDA  */
-#line 74 "atv3_sin.y"
+  case 7: /* linha: LINHA_VALIDA  */
+#line 88 "atv3_sin.y"
     {
         CampoNode *campo = processarLinha((yyvsp[0].str));
         if (campo == (CampoNode*) NULL) {
@@ -1118,22 +1132,21 @@ yyreduce:
         (yyval.campo_node) = campo;
         free((yyvsp[0].str));
     }
-#line 1122 "atv3_sin.tab.c"
+#line 1136 "atv3_sin.tab.c"
     break;
 
-  case 6: /* comando: LINHA_COMANDO  */
-#line 87 "atv3_sin.y"
+  case 8: /* comando: LINHA_COMANDO  */
+#line 101 "atv3_sin.y"
     {
         char* comando = extractHTTPCommand((yyvsp[0].str));
-        printf("Comando HTTP: %s\n", comando);
         free((yyvsp[0].str));
-        free(comando);
+        (yyval.str) = comando;
     }
-#line 1133 "atv3_sin.tab.c"
+#line 1146 "atv3_sin.tab.c"
     break;
 
 
-#line 1137 "atv3_sin.tab.c"
+#line 1150 "atv3_sin.tab.c"
 
       default: break;
     }
@@ -1326,7 +1339,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 94 "atv3_sin.y"
+#line 107 "atv3_sin.y"
 
 
 void yyerror(const char *msg) {
@@ -1337,9 +1350,8 @@ void yyerror(const char *msg) {
 
 int main(){
     yyparse();
-    imprimirLista(lista_completa);
-    liberarLista(lista_completa);
-
+    imprimirLista(lista_comandos);
+    liberarLista(lista_comandos);
     yylex_destroy();
 
     return 0;

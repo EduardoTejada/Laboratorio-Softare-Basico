@@ -10,7 +10,16 @@ typedef struct CampoNode {
     struct CampoNode *proximo;
 } CampoNode;
 
+typedef struct ComandoNode {
+    char *nome_comando;
+    CampoNode *campos;
+    struct ComandoNode *proximo;
+} ComandoNode;
+
 void addParameterToList(char* parametro, ParametroNode **ultimo);
+void addComandToList(ComandoNode* comando, ComandoNode ***ultimo);
+void addFieldToList(CampoNode* campo, CampoNode **ultimo);
 CampoNode* createFieldNode(char* nome_campo, ParametroNode* parametros);
-void imprimirLista(CampoNode *lista);
-void liberarLista(CampoNode *lista);
+ComandoNode* createComandNode(char* nome_comando, CampoNode* campos);
+void imprimirLista(ComandoNode *lista);
+void liberarLista(ComandoNode *lista);
