@@ -1,0 +1,10 @@
+
+./http-dump já está aceitando conexões de clientes HTTP.
+
+Mensagem recebida:
+GET / HTTP/1.1
+Host: localhost:6565
+User-Agent: Wget/1.21.4
+Accept: */*
+Accept-Encoding: identity
+Connection: Keep-Alive

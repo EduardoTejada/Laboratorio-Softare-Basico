@@ -1,0 +1,22 @@
+total 152
+16 a
+ 4 a.c
+16 b1
+ 4 b1.c
+16 b2
+ 4 b2.c
+16 c
+ 4 c.c
+16 d
+ 4 d.c
+16 e
+ 4 e.c
+ 4 f.c
+ 4 g.c
+ 4 h.c
+ 0 teste1.e
+ 4 teste.a
+ 4 teste.b
+ 4 testec1.txt
+ 4 testec2.txt
+ 4 teste.d

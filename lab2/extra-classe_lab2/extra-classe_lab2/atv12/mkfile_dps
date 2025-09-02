@@ -1,0 +1,6 @@
+all:
+	bison -d especifica_12.y
+
+	flex especifica_12.l
+
+	gcc especifica_12.tab.c lex.yy.c -o especifica_12 -lfl

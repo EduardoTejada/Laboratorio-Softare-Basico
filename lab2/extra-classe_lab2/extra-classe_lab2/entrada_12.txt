@@ -1,0 +1,8 @@
+# Arquivo de comandos e parâmetros.
+campo_a:parâmetro;a1,parâmetro_a2,opção_a1, 324234, x3294549
+campo_b : opção_b1, opção_b2, parametro_x;yz
+: parâmetro_inócuo_1, parâmetro_inútil_1
+campo_c :
+5campo: valor
+campo_d:     parâmetro_d, 22, 1, opção_inexistente
+

@@ -1,0 +1,4 @@
+O primeiro valor eh 11O, que parece 6 em binário, mas não é.
+Em seguida temos 6O, 60 e 61. Notou a diferença com a entrada?
+Agora, temos 60O e 61O, que são bem diferentes de 60 e 61.
+Entendeu o que está acontecendo? Então explique em seu relatório. 

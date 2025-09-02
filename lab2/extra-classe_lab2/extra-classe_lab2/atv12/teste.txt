@@ -1,0 +1,9 @@
+# Arquivo de comandos e parâmetros.
+   campo-a   : parâmetro;a1,parâmetro_a2,opção_a1, 324234, x3294549
+campo-b : opção_b1, opção_b2, parametro_x;yz
+: parâmetro_inócuo_1, parâmetro_inútil_1
+campo-c :
+5campo: valor
+campo-d: parâmetro_d, 22, 1, "opção interessante, muito interessante"
+mais_um_campo: parâmetro_conhecido
+outro-campo: este tem parâmetros desconhecidos
