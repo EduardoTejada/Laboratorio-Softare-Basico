@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "chrono": "c",
+        "functional": "c",
+        "fstream": "c",
+        "dirent.h": "c"
+    }
+}
