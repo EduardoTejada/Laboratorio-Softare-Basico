@@ -4,7 +4,6 @@
 #include <string.h>
 #include "atv3_sin.tab.h"
 void extern yyerror (char *s);
-//\.\/http-dump.*{DELIM}*.*
 %}
 
 ESPACO [\s\t]
