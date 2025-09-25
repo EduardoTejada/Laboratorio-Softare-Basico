@@ -4,15 +4,33 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include "inc/myList.h"
 #include "atv3_sin.tab.h"
-#include "processar-requisicoes.h"
-// Variáveis globais para comunicação entre parser e main
+#include "inc/processar-requisicoes.h"
 
-ComandoNode *lista_comandos_global = NULL;
+/* declarações vindas do Flex */
+typedef struct yy_buffer_state *YY_BUFFER_STATE;
+extern YY_BUFFER_STATE yy_scan_string(const char *yy_str);
+extern void yy_delete_buffer(YY_BUFFER_STATE b);
+extern FILE *yyin;
+extern int yyparse();
+
+// Definição das variáveis globais (agora definidas apenas aqui)
+CampoNode *lista_completa = NULL;
+CampoNode **ultimo = &lista_completa;
+
+// Variáveis do programa
 char *web_space = NULL;
 char *arquivo_req = NULL;
 char *arquivo_resp = NULL;
 char *arquivo_registro = NULL;
+
+// Protótipos das funções do processar-requisicoes.c
+void send_error_page(int status, char* connection, char* additional_info);
+int process_GET(char* caminhos[], char* connection);
+int process_HEAD(char* caminhos[], char* connection);
+int process_OPTIONS(char* connection);
+int process_TRACE(char* connection);
 
 // Função para redirecionar saída padrão para arquivo
 void redirect_stdout_to_file(const char *filename) {
@@ -29,7 +47,12 @@ void redirect_stdout_to_file(const char *filename) {
 // Função para restaurar saída padrão
 void restore_stdout() {
     fflush(stdout);
-    dup2(STDOUT_FILENO, 1);
+    // Para restaurar, precisamos reabrir /dev/stdout
+    int fd = open("/dev/stdout", O_WRONLY);
+    if (fd != -1) {
+        dup2(fd, STDOUT_FILENO);
+        close(fd);
+    }
 }
 
 // Função para ler arquivo de requisição
@@ -105,10 +128,65 @@ void registrar_requisicao_resposta(const char *req_file, const char *resp_file,
     fclose(reg);
 }
 
-// Função para processar requisição usando as funções do processar-requisicoes.c
-int processar_requisicao(ComandoNode *comando, const char *web_space, 
+// Função para extrair método e path da requisição
+int extrair_metodo_path(char *requisicao, char **metodo, char **path) {
+    // Fazer uma cópia para não modificar o original
+    char *copia = strdup(requisicao);
+    char *linha = strtok(copia, "\n");
+    
+    if (!linha) {
+        free(copia);
+        return 0;
+    }
+    
+    // Remover CR se presente no final da linha
+    char *cr = strchr(linha, '\r');
+    if (cr) *cr = '\0';
+    
+    printf("DEBUG: Linha de comando: '%s'\n", linha);
+    
+    // Extrair método
+    *metodo = strtok(linha, " ");
+    if (!*metodo) {
+        free(copia);
+        return 0;
+    }
+    
+    // Extrair path
+    *path = strtok(NULL, " ");
+    if (!*path) {
+        free(copia);
+        return 0;
+    }
+    
+    printf("DEBUG: Método: '%s', Path: '%s'\n", *metodo, *path);
+    
+    // Duplicar as strings para uso posterior
+    *metodo = strdup(*metodo);
+    *path = strdup(*path);
+    
+    free(copia);
+    return 1;
+}
+
+// Função para encontrar campo específico na lista
+char* encontrar_campo(CampoNode *lista, const char *nome_campo) {
+    CampoNode *campo = lista;
+    while (campo != NULL) {
+        if (strcasecmp(campo->nome, nome_campo) == 0 && campo->parametros != NULL) {
+            return campo->parametros->valor;
+        }
+        campo = campo->proximo;
+    }
+    return NULL;
+}
+
+// Função principal de processamento
+int processar_requisicao(char *requisicao, const char *web_space, 
                          const char *arquivo_resp) {
-    if (!comando || !comando->nome_comando) {
+    char *metodo, *path;
+    
+    if (!extrair_metodo_path(requisicao, &metodo, &path)) {
         return HTTP_INTERNAL_ERROR;
     }
     
@@ -116,42 +194,24 @@ int processar_requisicao(ComandoNode *comando, const char *web_space,
     redirect_stdout_to_file(arquivo_resp);
     
     int status_code;
-    char *method = comando->nome_comando;
     char *connection = "close";
     
-    // Encontrar o campo Host para determinar o recurso
-    char *recurso = "/";
-    CampoNode *campo = comando->campos;
-    
-    while (campo) {
-        if (strcasecmp(campo->nome, "Host") == 0 && campo->parametros) {
-            // Extrair path do Host se disponível
-            char *host_value = campo->parametros->valor;
-            char *path_start = strchr(host_value, '/');
-            if (path_start) {
-                recurso = path_start;
-            }
-            break;
-        }
-        campo = campo->proximo;
-    }
-    
     // Preparar argumentos para as funções de processamento
-    char *argv[] = {"servidor", (char*)web_space, (char*)recurso, method};
+    char *argv[] = {"servidor", (char*)web_space, (char*)path, NULL};
     
-    if (strcmp(method, "GET") == 0) {
+    if (strcmp(metodo, "GET") == 0) {
         status_code = process_GET(argv, connection);
-    } else if (strcmp(method, "HEAD") == 0) {
+    } else if (strcmp(metodo, "HEAD") == 0) {
         status_code = process_HEAD(argv, connection);
-    } else if (strcmp(method, "OPTIONS") == 0) {
+    } else if (strcmp(metodo, "OPTIONS") == 0) {
         status_code = process_OPTIONS(connection);
-    } else if (strcmp(method, "TRACE") == 0) {
+    } else if (strcmp(metodo, "TRACE") == 0) {
         status_code = process_TRACE(connection);
-    } else if (strcmp(method, "POST") == 0 || strcmp(method, "PUT") == 0) {
-        send_error_page(HTTP_NOT_IMPLEMENTED, connection, method);
+    } else if (strcmp(metodo, "POST") == 0 || strcmp(metodo, "PUT") == 0) {
+        send_error_page(HTTP_NOT_IMPLEMENTED, connection, metodo);
         status_code = HTTP_NOT_IMPLEMENTED;
     } else {
-        send_error_page(HTTP_METHOD_NOT_ALLOWED, connection, method);
+        send_error_page(HTTP_METHOD_NOT_ALLOWED, connection, metodo);
         status_code = HTTP_METHOD_NOT_ALLOWED;
     }
     
@@ -162,7 +222,7 @@ int processar_requisicao(ComandoNode *comando, const char *web_space,
 }
 
 int main(int argc, char *argv[]) {
-    if (argc != 6) {
+    if (argc != 5) {
         fprintf(stderr, "Uso: %s <Web Space> req_N.txt resp_N.txt registro.txt\n", argv[0]);
         return 1;
     }
@@ -189,29 +249,31 @@ int main(int argc, char *argv[]) {
     printf("=== PROCESSANDO REQUISIÇÃO COM PARSER ===\n");
     yyparse();
     
+    // Imprimir resultado da análise
+    printf("=== ESTRUTURA DE DADOS DO PARSER ===\n");
+    imprimirLista(lista_completa);
+    
     // Limpar buffer do lexer
     yy_delete_buffer(buffer);
-    free(requisicao);
     
-    // Processar requisição (primeiro comando da lista)
-    if (lista_comandos_global) {
-        printf("=== EXECUTANDO REQUISIÇÃO ===\n");
-        int status = processar_requisicao(lista_comandos_global, web_space, arquivo_resp);
-        
-        printf("Status da requisição: %d\n", status);
-        
-        // Registrar no arquivo de registro
-        int apenas_cabecalho = (strcmp(lista_comandos_global->nome_comando, "GET") == 0);
-        registrar_requisicao_resposta(arquivo_req, arquivo_resp, arquivo_registro, apenas_cabecalho);
-        
-        printf("Requisição processada e registrada com sucesso!\n");
-    } else {
-        printf("Nenhuma requisição válida encontrada!\n");
-    }
+    // Processar requisição
+    printf("=== EXECUTANDO REQUISIÇÃO ===\n");
+    int status = processar_requisicao(requisicao, web_space, arquivo_resp);
+    
+    printf("Status da requisição: %d\n", status);
+    
+    // Registrar no arquivo de registro
+    char *metodo, *path;
+    extrair_metodo_path(requisicao, &metodo, &path);
+    int apenas_cabecalho = (strcmp(metodo, "GET") == 0);
+    
+    registrar_requisicao_resposta(arquivo_req, arquivo_resp, arquivo_registro, apenas_cabecalho);
+    
+    printf("Requisição processada e registrada com sucesso!\n");
     
     // Liberar memória
-    liberarLista(lista_comandos_global);
-    yylex_destroy();
+    liberarLista(lista_completa);
+    free(requisicao);
     
     return 0;
 }

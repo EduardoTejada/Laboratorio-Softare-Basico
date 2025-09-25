@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "mylist.h": "c",
+        "mystring.h": "c",
+        "processar-requisicoes.h": "c"
+    }
+}

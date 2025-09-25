@@ -1,0 +1,25 @@
+Status da requisição: 403
+DEBUG: Linha de comando: 'HEAD /dir1/texto2.html  HTTP/1.1'
+DEBUG: Método: 'HEAD', Path: '/dir1/texto2.html'
+Requisição processada e registrada com sucesso!
+ervidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Content-Type: text/html; charset=utf-8
+Content-Length: 486
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>403 - Acesso Negado</title>
+</head>
+<body>
+    <h1 class="error-code">403</h1>
+    <h2 class="error-title">403 - Acesso Negado</h2>
+    <div class="error-message">Você não tem permissão para acessar este recurso.
+<br>meu-webspace/dir1/texto2.html</div>
+    <div class="error-info">
+        <strong>Data:</strong> Thu, 25 Sep 2025 02:23:19 GMT<br>
+        <strong>Servidor:</strong> Servidor HTTP ver. 0.1 de Eduardo
+    </div>
+</body>
+</html>

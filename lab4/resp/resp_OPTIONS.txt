@@ -1,0 +1,5 @@
+Status da requisição: 200
+DEBUG: Linha de comando: 'OPTIONS / HTTP/1.1'
+DEBUG: Método: 'OPTIONS', Path: '/'
+Requisição processada e registrada com sucesso!
+

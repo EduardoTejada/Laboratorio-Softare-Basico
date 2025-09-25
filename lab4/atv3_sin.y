@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include "myString.h"
+#include "inc/myString.h"
 
 int yylex();
 void yyerror(const char *msg);
@@ -11,14 +11,9 @@ void yylex_destroy(void);
 
 extern char* yytext;
 
-CampoNode *lista_campo = NULL;
-CampoNode **ultimo_campo = &lista_campo;
-
-ComandoNode *lista_comandos = NULL;
-ComandoNode **ultimo_comando = &lista_comandos;
-
-// Declaração da variável global definida em servidor.c
-extern ComandoNode *lista_comandos_global;
+// Declaração como extern (definição está em servidor.c)
+extern CampoNode *lista_completa;
+extern CampoNode **ultimo;
 
 %}
 
@@ -29,10 +24,10 @@ extern ComandoNode *lista_comandos_global;
     struct {
         char* comando;
         struct CampoNode* campos;
-    } lista_comando_completo;
+    } programa_completo;
 }
 
-%type <lista_comando_completo> lista_comando
+%type <programa_completo> programa
 %type <str> comando
 %type <campo_node> linhas
 %type <campo_node> linha
@@ -42,23 +37,11 @@ extern ComandoNode *lista_comandos_global;
 
 %%
 
-
-programa : lista_comando programa
-    | lista_comando
-;
-
-lista_comando : comando linhas
+programa : comando linhas
     {
-        ComandoNode *comando = createComandNode($1, lista_campo);
-        addComandToList(comando, &ultimo_comando);
-        
-        if(lista_comandos == NULL){
-            lista_comandos = comando;
-            lista_comandos_global = comando;
-        }
-
-        lista_campo = NULL;
-        ultimo_campo = &lista_campo;
+        $$.comando = $1;
+        $$.campos = $2;
+        printf("Parser: Comando '%s' processado com sucesso\n", $1);
     }
 ;
 
@@ -66,11 +49,11 @@ linhas : linhas linha
     {
         // Adiciona à lista ligada
         if ($2 != (CampoNode*) NULL) {
-            *ultimo_campo = $2;
-            ultimo_campo = &($2->proximo);
+            *ultimo = $2;
+            ultimo = &($2->proximo);
         }
         else {
-            printf("ERRO!\n");
+            printf("ERRO: Falha ao adicionar campo à lista\n");
             exit(1);
         }
         $$ = $1; // Retorna a cabeça da lista
@@ -78,11 +61,11 @@ linhas : linhas linha
     | linha
     {
         if ($1 != (CampoNode*) NULL) {
-            *ultimo_campo = $1;
-            ultimo_campo = &($1->proximo);
+            *ultimo = $1;
+            ultimo = &($1->proximo);
         }
         else {
-            printf("ERRO!\n");
+            printf("ERRO: Falha ao adicionar campo à lista\n");
             exit(1);
         }
         $$ = $1; // Retorna o primeiro elemento
@@ -93,10 +76,11 @@ linha : LINHA_VALIDA
     {
         CampoNode *campo = processarLinha($1);
         if (campo == (CampoNode*) NULL) {
-            printf("ERRO!\n");
+            printf("ERRO: Falha ao processar linha '%s'\n", $1);
             free($1);
             exit(1);
         }
+        printf("Parser: Campo '%s' processado\n", campo->nome);
         $$ = campo;
         free($1);
     }
@@ -105,23 +89,15 @@ linha : LINHA_VALIDA
 comando: LINHA_COMANDO
     {
         char* comando = extractHTTPCommand($1);
+        printf("Parser: Comando HTTP extraído: %s\n", comando);
+        $$ = strdup(comando); // Duplicar para uso posterior
         free($1);
-        $$ = comando;
+        free(comando);
     }
 ;
 %%
 
 void yyerror(const char *msg) {
-    fprintf(stderr, "Erro: %s\n", msg);
+    fprintf(stderr, "Erro de parsing: %s\n", msg);
     fprintf(stderr, "Token atual: %s\n", yytext);
 }
-
-
-/*int main(){
-    yyparse();
-    imprimirLista(lista_comandos);
-    liberarLista(lista_comandos);
-    yylex_destroy();
-
-    return 0;
-}*/

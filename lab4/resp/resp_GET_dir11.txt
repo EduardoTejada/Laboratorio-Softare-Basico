@@ -1,0 +1,22 @@
+Status da requisição: 404
+DEBUG: Linha de comando: 'GET /dir1/dir11/ HTTP/1.1'
+DEBUG: Método: 'GET', Path: '/dir1/dir11/'
+Requisição processada e registrada com sucesso!
+th: 561
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>404 - Página Não Encontrada</title>
+</head>
+<body>
+    <h1 class="error-code">404</h1>
+    <h2 class="error-title">404 - Página Não Encontrada</h2>
+    <div class="error-message">O recurso solicitado não foi encontrado no servidor.
+<br>Diretório: meu-webspace//dir1/dir11/ (index.html ou welcome.html não encontrados)</div>
+    <div class="error-info">
+        <strong>Data:</strong> Thu, 25 Sep 2025 02:23:19 GMT<br>
+        <strong>Servidor:</strong> Servidor HTTP ver. 0.1 de Eduardo
+    </div>
+</body>
+</html>

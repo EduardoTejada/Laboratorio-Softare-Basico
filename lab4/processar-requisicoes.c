@@ -366,104 +366,80 @@ int process_HEAD(char* caminhos[], char* connection) {
     strncpy(target_inicial, caminhos[2], 4095);
     target_inicial[4095] = '\0';
     
+    if (strcmp(target_inicial, "") == 0 || strcmp(target_inicial, "/") == 0) {
+        strcpy(target_inicial, "index.html");
+    }
+    else if (target_inicial[0] == '/') {
+        memmove(target_inicial, target_inicial + 1, strlen(target_inicial));
+    }
+    
+    int is_directory = 0;
+    if (target_inicial[strlen(target_inicial)-1] == '/') {
+        is_directory = 1;
+        target_inicial[strlen(target_inicial)-1] = '\0'; // Remover barra final
+    }
+    
     snprintf(target_completo, sizeof(target_completo), "%s/%s", home, target_inicial);
+    
+    printf("DEBUG process_HEAD: Home='%s', Target='%s', Completo='%s', IsDir=%d\n", 
+           home, target_inicial, target_completo, is_directory);
 
     struct stat statbuf;
 
     if(stat(target_completo, &statbuf) == -1){
-        send_error_page(HTTP_NOT_FOUND, "HEAD", target_completo);
-        return HTTP_NOT_FOUND;
+        if (is_directory) {
+            char target_index[4096];
+            snprintf(target_index, sizeof(target_index), "%s/index.html", target_completo);
+            if(stat(target_index, &statbuf) != -1){
+                // Encontrou index.html no diretório
+                strcpy(target_completo, target_index);
+            } else {
+                char target_welcome[4096];
+                snprintf(target_welcome, sizeof(target_welcome), "%s/welcome.html", target_completo);
+                if(stat(target_welcome, &statbuf) != -1){
+                    // Encontrou welcome.html no diretório
+                    strcpy(target_completo, target_welcome);
+                } else {
+                    send_error_page(HTTP_NOT_FOUND, connection, target_completo);
+                    return HTTP_NOT_FOUND;
+                }
+            }
+        } else {
+            send_error_page(HTTP_NOT_FOUND, connection, target_completo);
+            return HTTP_NOT_FOUND;
+        }
     }
     
     if(access(target_completo, R_OK) != 0){
-        send_error_page(HTTP_FORBIDDEN, "HEAD", target_completo);
+        send_error_page(HTTP_FORBIDDEN, connection, target_completo);
         return HTTP_FORBIDDEN;
     }
 
-    switch (statbuf.st_mode & S_IFMT){
-        case S_IFREG: // Arquivo regular
-            send_headers(HTTP_OK, connection, &statbuf, target_completo, 1);
-            return HTTP_OK;
-
-        case S_IFDIR: // Diretório
-            if(access(target_completo, X_OK) != 0){
-                send_error_page(HTTP_FORBIDDEN, "HEAD", target_completo);
-                return HTTP_FORBIDDEN;
-            }
-
-            char target_welcome[256];
-            char target_index[256];
-            struct stat statbuf_index, statbuf_welcome;
-            
-            snprintf(target_welcome, sizeof(target_welcome), "%s/welcome.html", target_completo);
-            snprintf(target_index, sizeof(target_index), "%s/index.html", target_completo);
-
-            int index_encontrado = 0, welcome_encontrado = 0;
-            int index_permitido = 0, welcome_permitido = 0;
-            
-            if(stat(target_index, &statbuf_index) != -1){
-                index_encontrado = 1;
-                if(access(target_index, R_OK) == 0)
-                    index_permitido = 1;
-            }
-            if(stat(target_welcome, &statbuf_welcome) != -1){
-                welcome_encontrado = 1;
-                if(access(target_welcome, R_OK) == 0)
-                    welcome_permitido = 1;
-            }
-
-            if(index_encontrado == 0 && welcome_encontrado == 0) {
-                send_error_page(HTTP_NOT_FOUND, "HEAD", target_completo);
-                return HTTP_NOT_FOUND;
-            }
-            
-            if(index_permitido == 0 && welcome_permitido == 0) {
-                send_error_page(HTTP_FORBIDDEN, "HEAD", target_completo);
-                return HTTP_FORBIDDEN;
-            }
-            
-            // Preferência: index.html > welcome.html
-            char* arquivo_escolhido = target_index;
-            struct stat* statbuf_escolhido = &statbuf_index;
-            
-            if(!index_permitido || (welcome_permitido && !index_encontrado)) {
-                arquivo_escolhido = target_welcome;
-                statbuf_escolhido = &statbuf_welcome;
-            }
-            
-            send_headers(HTTP_OK, connection, statbuf_escolhido, arquivo_escolhido, 1);
-            return HTTP_OK;
+    if (is_directory && S_ISREG(statbuf.st_mode)) {
+        // Já encontramos um arquivo regular, usar ele
+    } else if (S_ISDIR(statbuf.st_mode)) {
+        // É um diretório, procurar index.html ou welcome.html
+        char target_index[4096];
+        char target_welcome[4096];
         
-        default:
-            send_error_page(HTTP_FORBIDDEN, "HEAD", target_completo);
-            return HTTP_FORBIDDEN;
-    }
-}
-
-// Função principal
-int main(int argc, char *argv[]){
-    if(argc == 4) {
-        char* method = argv[3];
-        char* connection = "close";
+        snprintf(target_index, sizeof(target_index), "%s/index.html", target_completo);
+        snprintf(target_welcome, sizeof(target_welcome), "%s/welcome.html", target_completo);
         
-        if(strcmp(method, "GET") == 0) {
-            process_GET(argv, connection);
-        } else if(strcmp(method, "HEAD") == 0) {
-            process_HEAD(argv, connection);
-        } else if(strcmp(method, "OPTIONS") == 0) {
-            process_OPTIONS(connection);
-        } else if(strcmp(method, "TRACE") == 0) {
-            process_TRACE(connection);
+        struct stat statbuf_index, statbuf_welcome;
+        int index_encontrado = 0, welcome_encontrado = 0;
+        
+        if(stat(target_index, &statbuf_index) != -1 && access(target_index, R_OK) == 0){
+            strcpy(target_completo, target_index);
+            statbuf = statbuf_index;
+        } else if(stat(target_welcome, &statbuf_welcome) != -1 && access(target_welcome, R_OK) == 0){
+            strcpy(target_completo, target_welcome);
+            statbuf = statbuf_welcome;
         } else {
-            send_error_page(HTTP_METHOD_NOT_ALLOWED, connection, method);
+            send_error_page(HTTP_NOT_FOUND, connection, target_completo);
+            return HTTP_NOT_FOUND;
         }
-    } else {
-        // Erro de uso - enviar página de erro HTML
-        char usage_info[256];
-        snprintf(usage_info, sizeof(usage_info), "Uso correto: %s [caminho da raiz] [recurso] [GET|HEAD|OPTIONS|TRACE]", argv[0]);
-        send_error_page(HTTP_INTERNAL_ERROR, "close", usage_info);
-        return 1;
     }
-    
-    return 0;
+
+    send_headers(HTTP_OK, connection, &statbuf, target_completo, 1);
+    return HTTP_OK;
 }
