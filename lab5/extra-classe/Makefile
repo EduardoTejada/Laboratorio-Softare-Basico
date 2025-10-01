@@ -10,6 +10,7 @@ all: servidor
 
 servidor: $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $(OBJS)
+	rm -f $(OBJS)
 
 servidor.o: servidor.c atv3_sin.tab.h inc/myList.h inc/myString.h
 	$(CC) $(CFLAGS) -c servidor.c
@@ -26,14 +27,14 @@ atv3_sin.tab.c atv3_sin.tab.h: atv3_sin.y
 lex.yy.c: atv3_lex.l
 	$(LEX) atv3_lex.l
 
-myList.o: myList.c inc/myList.h
-	$(CC) $(CFLAGS) -c myList.c
+myList.o: inc/myList.c inc/myList.h
+	$(CC) $(CFLAGS) -c inc/myList.c
 
-myString.o: myString.c inc/myString.h
-	$(CC) $(CFLAGS) -c myString.c
+myString.o: inc/myString.c inc/myString.h
+	$(CC) $(CFLAGS) -c inc/myString.c
 
-processar-requisicoes.o: processar-requisicoes.c
-	$(CC) $(CFLAGS) -c processar-requisicoes.c
+processar-requisicoes.o: inc/processar-requisicoes.c
+	$(CC) $(CFLAGS) -c inc/processar-requisicoes.c
 
 clean:
 	rm -f *.o servidor atv3_sin.tab.c atv3_sin.tab.h lex.yy.c

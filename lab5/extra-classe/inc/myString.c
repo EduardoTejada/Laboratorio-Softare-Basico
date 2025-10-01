@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include "inc/myString.h"
+#include "myString.h"
 
 // Retira os espaços iniciais
 char* trimBegin(char *str){

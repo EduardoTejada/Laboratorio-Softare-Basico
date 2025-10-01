@@ -1,33 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "processar-requisicoes.h"
 #include <unistd.h>
 #include <string.h>
 #include <sys/types.h>
-#include <sys/stat.h>
 #include <sys/time.h>
 #include <time.h>
 #include <dirent.h>
 #include <fcntl.h>
 #include <errno.h>
-
-#define HTTP_OK 200
-#define HTTP_NOT_FOUND 404
-#define HTTP_FORBIDDEN 403
-#define HTTP_METHOD_NOT_ALLOWED 405
-#define HTTP_INTERNAL_ERROR 500
-#define HTTP_NOT_IMPLEMENTED 501
-
-#ifndef S_IFDIR
-#define S_IFDIR 1
-#endif
-
-#ifndef S_IFMT
-#define S_IFMT 2
-#endif
-
-#ifndef S_IFREG
-#define S_IFREG 3
-#endif
 
 // Função para obter a data/hora atual no formato HTTP
 char* get_http_date() {

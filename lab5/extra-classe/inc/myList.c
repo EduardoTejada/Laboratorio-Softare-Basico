@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "inc/myList.h"
+#include "myList.h"
 
 void addParameterToList(char* parametro, ParametroNode **ultimo){
     ParametroNode *novo = malloc(sizeof(ParametroNode));

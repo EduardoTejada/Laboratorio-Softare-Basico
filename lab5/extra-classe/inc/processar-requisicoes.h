@@ -10,6 +10,18 @@
 #define HTTP_INTERNAL_ERROR 500
 #define HTTP_NOT_IMPLEMENTED 501
 
+#ifndef S_IFDIR
+#define S_IFDIR 1
+#endif
+
+#ifndef S_IFMT
+#define S_IFMT 2
+#endif
+
+#ifndef S_IFREG
+#define S_IFREG 3
+#endif
+
 // Declarações das funções
 char* get_http_date();
 char* get_content_type(char* filename);
