@@ -1,0 +1,10 @@
+Status da requisição: 200
+DEBUG: Linha de comando: 'HEAD /dir1/texto1.html  HTTP/1.1'
+DEBUG: Método: 'HEAD', Path: '/dir1/texto1.html'
+Requisição processada e registrada com sucesso!
+ HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 24 Sep 2025 23:06:49 GMT
+Content-Length: 212
+Content-Type: text/html
+
