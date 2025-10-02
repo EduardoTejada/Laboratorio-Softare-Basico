@@ -143,8 +143,6 @@ int extrair_metodo_path(char *requisicao, char **metodo, char **path) {
     char *cr = strchr(linha, '\r');
     if (cr) *cr = '\0';
     
-    printf("DEBUG: Linha de comando: '%s'\n", linha);
-    
     // Extrair método
     *metodo = strtok(linha, " ");
     if (!*metodo) {
@@ -158,8 +156,6 @@ int extrair_metodo_path(char *requisicao, char **metodo, char **path) {
         free(copia);
         return 0;
     }
-    
-    printf("DEBUG: Método: '%s', Path: '%s'\n", *metodo, *path);
     
     // Duplicar as strings para uso posterior
     *metodo = strdup(*metodo);
