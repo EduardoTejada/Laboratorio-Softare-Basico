@@ -7,6 +7,10 @@
 #include "inc/myList.h"
 #include "atv3_sin.tab.h"
 #include "inc/processar-requisicoes.h"
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
 
 /* declarações vindas do Flex */
 typedef struct yy_buffer_state *YY_BUFFER_STATE;
@@ -217,27 +221,103 @@ int processar_requisicao(char *requisicao, const char *web_space,
     return status_code;
 }
 
-int main(int argc, char *argv[]) {
-    if (argc != 5) {
-        fprintf(stderr, "Uso: %s <Web Space> req_N.txt resp_N.txt registro.txt\n", argv[0]);
-        return 1;
+
+void conectar_na_internet(char *endereco_ip, int porta, int* soquete,
+                          struct sockaddr_in* meu_cliente,
+                          int soquete_msg, socklen_t tam_endereco){
+    // cria socket TCP
+    *soquete = socket(AF_INET, SOCK_STREAM, 0);
+    if (*soquete < 0) {
+        perror("Erro ao criar socket");
+        exit(1);
     }
+
+    if (inet_aton(endereco_ip, meu_cliente.sin_addr) == 0) {
+        printf("Endereço IP inválido\n");
+        fprintf(stderr, "Endereço IP inválido\n");
+        exit(1);
+    }
+
+    // permite reuso rápido da porta
+    int opt = 1;
+    if (setsockopt(*soquete, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
+        perror("Erro no setsockopt");
+        exit(1);
+    }
+
+    // configura endereço/porta
+    *meu_cliente.sin_family = AF_INET;
+    *meu_cliente.sin_port = htons(porta);
+    *meu_cliente.sin_addr.s_addr = INADDR_ANY; // qualquer interface
+
+    if (bind(*soquete, (struct sockaddr*)meu_cliente, sizeof(*meu_cliente)) < 0) {
+        perror("Erro no bind");
+        exit(1);
+    }
+
+    if (listen(*soquete, 5) < 0) {
+        perror("Erro no listen");
+        exit(1);
+    }
+}
+
+
+int main(int argc, char *argv[]) {
+    if(argc != 3){
+        fprintf(stderr, "Uso: %s [endereco IP] [porta]\n", argv[0]);
+        exit(1);
+    }
+
+    char *endereco_ip = argv[1];
+    int porta = atoi(argv[2]);
+
+    int soquete, soquete_msg;
+    struct sockaddr_in meu_cliente;
+    socklen_t tam_endereco = sizeof(meu_cliente);
+    char requisicao[2048];
+
+    conectar_na_rede(endereco_ip, porta, &soquete, &meu_cliente, soquete_msg, tam_endereco);
+
+    while (1) {
+        soquete_msg = accept(soquete, (struct sockaddr*)&meu_cliente, &tam_endereco);
+        if (soquete_msg < 0) {
+            perror("Erro no accept");
+            continue;
+        }
+
+        memset(requisicao, 0, sizeof(requisicao));
+        read(soquete_msg, requisicao, sizeof(requisicao) - 1);
+
+        // CÓDIGO PARA PROCESSAR REQUISIÇÃO
+        //printf("%s\n", requisicao);
+
+        // CÓDIGO PARA EXIBIR RESPOSTA
+        /*const char *resposta =
+            "HTTP/1.1 200 OK\r\n"
+            "Content-Type: text/html\r\n"
+            "Connection: close\r\n"
+            "\r\n"
+            "<html><body><h1>Olá, mundo!</h1></body></html>";
+
+            */
+        write(soquete_msg, resposta, strlen(resposta));
+        close(soquete_msg);
+    }
+
+    close(soquete);
     
-    web_space = argv[1];
-    arquivo_req = argv[2];
-    arquivo_resp = argv[3];
-    arquivo_registro = argv[4];
     
     // Ler arquivo de requisição
-    char *requisicao = ler_arquivo_requisicao(arquivo_req);
+    /*char *requisicao = ler_arquivo_requisicao(arquivo_req);
     if (!requisicao) {
         return 1;
-    }
+    }*/
     
-    printf("=== REQUISIÇÃO LIDA DO ARQUIVO ===\n");
+    printf("=== REQUISIÇÃO LIDA DA WEB ===\n");
     printf("%s\n", requisicao);
     printf("=== FIM DA REQUISIÇÃO ===\n\n");
     
+    /*
     // Configurar o parser para ler da string
     YY_BUFFER_STATE buffer = yy_scan_string(requisicao);
     
@@ -270,6 +350,6 @@ int main(int argc, char *argv[]) {
     // Liberar memória
     liberarLista(lista_completa);
     free(requisicao);
-    
+    */
     return 0;
 }
