@@ -1,147 +1,27 @@
 
-=== REQUISIÇÃO: reqs/req_GET_dir1.txt ===
-GET /dir1/ HTTP/1.1
-Host: localhost:7080
-User-Agent: curl/8.5.0
-Accept: */*
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+Priority: u=0, i
 
 
-=== RESPOSTA: resp/resp_GET_dir1.txt ===
+=== RESPOSTA: resposta.txt ===
 HTTP/1.1 404 Not Found
-Date: Thu, 25 Sep 2025 02:23:19 GMT
+Date: Wed, 08 Oct 2025 03:19:53 GMT
 Server: Servidor HTTP ver. 0.1 de Eduardo
 Connection: close
 Content-Type: text/html; charset=utf-8
-Content-Length: 555
-
-=== FIM ===
-
-
-=== REQUISIÇÃO: reqs/req_GET_dir2.txt ===
-GET /dir2/ HTTP/1.1
-Host: localhost:7080
-User-Agent: curl/8.5.0
-Accept: */*
-
-
-=== RESPOSTA: resp/resp_GET_dir2.txt ===
-HTTP/1.1 403 Forbidden
-Date: Thu, 25 Sep 2025 02:23:19 GMT
-Server: Servidor HTTP ver. 0.1 de Eduardo
-Connection: close
-Content-Type: text/html; charset=utf-8
-Content-Length: 519
-
-=== FIM ===
-
-
-=== REQUISIÇÃO: reqs/req_GET_dir11.txt ===
-GET /dir1/dir11/ HTTP/1.1
-Host: localhost:7080
-User-Agent: curl/8.5.0
-Accept: */*
-
-
-=== RESPOSTA: resp/resp_GET_dir11.txt ===
-HTTP/1.1 404 Not Found
-Date: Thu, 25 Sep 2025 02:23:19 GMT
-Server: Servidor HTTP ver. 0.1 de Eduardo
-Connection: close
-Content-Type: text/html; charset=utf-8
-Content-Length: 561
-
-=== FIM ===
-
-
-=== REQUISIÇÃO: reqs/req_GET_index.txt ===
-GET /index.html HTTP/1.1
-Host: localhost:7080
-User-Agent: curl/8.5.0
-Accept: */*
-
-
-=== RESPOSTA: resp/resp_GET_index.txt ===
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>INDEX</title>
-</head>
-<body>
-    INDEXXXX
-</body>
-</html>HTTP/1.1 200 OK
-Date: Thu, 25 Sep 2025 02:23:19 GMT
-Server: Servidor HTTP ver. 0.1 de Eduardo
-Connection: close
-Last-Modified: Wed, 24 Sep 2025 23:05:11 GMT
-Content-Length: 210
-Content-Type: text/html
-
-=== FIM ===
-
-
-=== REQUISIÇÃO: reqs/req_GET_texto1.txt ===
-GET /dir1/texto1.html HTTP/1.1
-Host: localhost:7080
-User-Agent: curl/8.5.0
-Accept: */*
-
-
-=== RESPOSTA: resp/resp_GET_texto1.txt ===
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TEXTO1</title>
-</head>
-<body>
-    TEXTO1111
-</body>
-</html>HTTP/1.1 200 OK
-Date: Thu, 25 Sep 2025 02:23:19 GMT
-Server: Servidor HTTP ver. 0.1 de Eduardo
-Connection: close
-Last-Modified: Wed, 24 Sep 2025 23:06:49 GMT
-Content-Length: 212
-Content-Type: text/html
-
-=== FIM ===
-
-
-=== REQUISIÇÃO: reqs/req_GET_texto2.txt ===
-GET /dir1/texto2.html HTTP/1.1
-Host: localhost:7080
-User-Agent: curl/8.5.0
-Accept: */*
-
-
-=== RESPOSTA: resp/resp_GET_texto2.txt ===
-HTTP/1.1 403 Forbidden
-Date: Thu, 25 Sep 2025 02:23:19 GMT
-Server: Servidor HTTP ver. 0.1 de Eduardo
-Connection: close
-Content-Type: text/html; charset=utf-8
-Content-Length: 524
-
-=== FIM ===
-
-
-=== REQUISIÇÃO: reqs/req_HEAD_dir1.txt ===
-HEAD /dir1/  HTTP/1.1
-Host: localhost:7080
-
-
-=== RESPOSTA: resp/resp_HEAD_dir1.txt ===
-DEBUG process_HEAD: Home='meu-webspace', Target='dir1', Completo='meu-webspace/dir1', IsDir=1
-HTTP/1.1 404 Not Found
-Date: Thu, 25 Sep 2025 02:23:19 GMT
-Server: Servidor HTTP ver. 0.1 de Eduardo
-Connection: close
-Content-Type: text/html; charset=utf-8
-Content-Length: 495
+Content-Length: 502
 
 <!DOCTYPE html>
 <html>
@@ -152,140 +32,316 @@ Content-Length: 495
     <h1 class="error-code">404</h1>
     <h2 class="error-title">404 - Página Não Encontrada</h2>
     <div class="error-message">O recurso solicitado não foi encontrado no servidor.
-<br>meu-webspace/dir1</div>
+<br>Arquivo: /var/www/html//</div>
     <div class="error-info">
-        <strong>Data:</strong> Thu, 25 Sep 2025 02:23:19 GMT<br>
+        <strong>Data:</strong> Wed, 08 Oct 2025 03:19:53 GMT<br>
         <strong>Servidor:</strong> Servidor HTTP ver. 0.1 de Eduardo
     </div>
 </body>
 </html>=== FIM ===
 
 
-=== REQUISIÇÃO: reqs/req_HEAD_dir2.txt ===
-HEAD /dir2/  HTTP/1.1
-Host: localhost:7080
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+Priority: u=0, i
 
 
-=== RESPOSTA: resp/resp_HEAD_dir2.txt ===
-DEBUG process_HEAD: Home='meu-webspace', Target='dir2', Completo='meu-webspace/dir2', IsDir=1
-HTTP/1.1 404 Not Found
-Date: Thu, 25 Sep 2025 02:23:19 GMT
-Server: Servidor HTTP ver. 0.1 de Eduardo
-Connection: close
-Content-Type: text/html; charset=utf-8
-Content-Length: 495
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>404 - Página Não Encontrada</title>
-</head>
-<body>
-    <h1 class="error-code">404</h1>
-    <h2 class="error-title">404 - Página Não Encontrada</h2>
-    <div class="error-message">O recurso solicitado não foi encontrado no servidor.
-<br>meu-webspace/dir2</div>
-    <div class="error-info">
-        <strong>Data:</strong> Thu, 25 Sep 2025 02:23:19 GMT<br>
-        <strong>Servidor:</strong> Servidor HTTP ver. 0.1 de Eduardo
-    </div>
-</body>
-</html>=== FIM ===
-
-
-=== REQUISIÇÃO: reqs/req_HEAD_dir11.txt ===
-HEAD /dir1/dir11/  HTTP/1.1
-Host: localhost:7080
-
-
-=== RESPOSTA: resp/resp_HEAD_dir11.txt ===
-DEBUG process_HEAD: Home='meu-webspace', Target='dir1/dir11', Completo='meu-webspace/dir1/dir11', IsDir=1
-HTTP/1.1 404 Not Found
-Date: Thu, 25 Sep 2025 02:23:19 GMT
-Server: Servidor HTTP ver. 0.1 de Eduardo
-Connection: close
-Content-Type: text/html; charset=utf-8
-Content-Length: 501
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>404 - Página Não Encontrada</title>
-</head>
-<body>
-    <h1 class="error-code">404</h1>
-    <h2 class="error-title">404 - Página Não Encontrada</h2>
-    <div class="error-message">O recurso solicitado não foi encontrado no servidor.
-<br>meu-webspace/dir1/dir11</div>
-    <div class="error-info">
-        <strong>Data:</strong> Thu, 25 Sep 2025 02:23:19 GMT<br>
-        <strong>Servidor:</strong> Servidor HTTP ver. 0.1 de Eduardo
-    </div>
-</body>
-</html>=== FIM ===
-
-
-=== REQUISIÇÃO: reqs/req_HEAD_test.txt ===
-HEAD /dir1/  HTTP/1.1
-Host: localhost:7080
-=== RESPOSTA: resp/resp_HEAD_test.txt ===
-DEBUG process_HEAD: Home='meu-webspace', Target='dir1', Completo='meu-webspace/dir1', IsDir=1
-HTTP/1.1 404 Not Found
-Date: Thu, 25 Sep 2025 02:23:19 GMT
-Server: Servidor HTTP ver. 0.1 de Eduardo
-Connection: close
-Content-Type: text/html; charset=utf-8
-Content-Length: 495
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>404 - Página Não Encontrada</title>
-</head>
-<body>
-    <h1 class="error-code">404</h1>
-    <h2 class="error-title">404 - Página Não Encontrada</h2>
-    <div class="error-message">O recurso solicitado não foi encontrado no servidor.
-<br>meu-webspace/dir1</div>
-    <div class="error-info">
-        <strong>Data:</strong> Thu, 25 Sep 2025 02:23:19 GMT<br>
-        <strong>Servidor:</strong> Servidor HTTP ver. 0.1 de Eduardo
-    </div>
-</body>
-</html>=== FIM ===
-
-
-=== REQUISIÇÃO: reqs/req_HEAD_texto1.txt ===
-HEAD /dir1/texto1.html  HTTP/1.1
-Host: localhost:7080
-
-
-=== RESPOSTA: resp/resp_HEAD_texto1.txt ===
-DEBUG process_HEAD: Home='meu-webspace', Target='dir1/texto1.html', Completo='meu-webspace/dir1/texto1.html', IsDir=0
+=== RESPOSTA: resposta.txt ===
 HTTP/1.1 200 OK
-Date: Thu, 25 Sep 2025 02:23:19 GMT
+Date: Wed, 08 Oct 2025 03:27:03 GMT
 Server: Servidor HTTP ver. 0.1 de Eduardo
 Connection: close
-Last-Modified: Wed, 24 Sep 2025 23:06:49 GMT
-Content-Length: 212
+Last-Modified: Wed, 08 Oct 2025 03:26:11 GMT
+Content-Length: 0
 Content-Type: text/html
 
 === FIM ===
 
 
-=== REQUISIÇÃO: reqs/req_HEAD_texto2.txt ===
-HEAD /dir1/texto2.html  HTTP/1.1
-Host: localhost:7080
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+If-Modified-Since: Wed, 08 Oct 2025 03:26:11 GMT
+Priority: u=0, i
 
 
-=== RESPOSTA: resp/resp_HEAD_texto2.txt ===
-DEBUG process_HEAD: Home='meu-webspace', Target='dir1/texto2.html', Completo='meu-webspace/dir1/texto2.html', IsDir=0
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 03:27:38 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:26:11 GMT
+Content-Length: 0
+Content-Type: text/html
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET /index.html HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+Priority: u=0, i
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 03:28:04 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:26:11 GMT
+Content-Length: 0
+Content-Type: text/html
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET /index.html HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+If-Modified-Since: Wed, 08 Oct 2025 03:26:11 GMT
+Priority: u=0, i
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 03:28:17 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:26:11 GMT
+Content-Length: 0
+Content-Type: text/html
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET /dir1/texto1.html HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+Priority: u=0, i
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 03:28:44 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:26:11 GMT
+Content-Length: 0
+Content-Type: text/html
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET /dir1/texto1.html HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+If-Modified-Since: Wed, 08 Oct 2025 03:26:11 GMT
+Priority: u=0, i
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 03:29:17 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:26:11 GMT
+Content-Length: 0
+Content-Type: text/html
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+If-Modified-Since: Wed, 08 Oct 2025 03:26:11 GMT
+Priority: u=0, i
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 03:36:48 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:26:11 GMT
+Content-Length: 0
+Content-Type: text/html
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+If-Modified-Since: Wed, 08 Oct 2025 03:26:11 GMT
+Priority: u=0, i
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 03:45:31 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET /dir1/texto1.html HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+If-Modified-Since: Wed, 08 Oct 2025 03:26:11 GMT
+Priority: u=0, i
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 03:45:45 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 132
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TEXTO1</title>
+    </head>
+    <body>
+        <h1>TEXTO1</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET /dir1/texto2.html HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+Priority: u=0, i
+
+
+=== RESPOSTA: resposta.txt ===
 HTTP/1.1 403 Forbidden
-Date: Thu, 25 Sep 2025 02:23:19 GMT
+Date: Wed, 08 Oct 2025 03:45:51 GMT
 Server: Servidor HTTP ver. 0.1 de Eduardo
 Connection: close
 Content-Type: text/html; charset=utf-8
-Content-Length: 486
+Content-Length: 527
 
 <!DOCTYPE html>
 <html>
@@ -296,45 +352,2221 @@ Content-Length: 486
     <h1 class="error-code">403</h1>
     <h2 class="error-title">403 - Acesso Negado</h2>
     <div class="error-message">Você não tem permissão para acessar este recurso.
-<br>meu-webspace/dir1/texto2.html</div>
+<br>Arquivo: ./meu-webspace///dir1/texto2.html (Sem permissão de leitura)</div>
     <div class="error-info">
-        <strong>Data:</strong> Thu, 25 Sep 2025 02:23:19 GMT<br>
+        <strong>Data:</strong> Wed, 08 Oct 2025 03:45:51 GMT<br>
         <strong>Servidor:</strong> Servidor HTTP ver. 0.1 de Eduardo
     </div>
 </body>
 </html>=== FIM ===
 
 
-=== REQUISIÇÃO: reqs/req_OPTIONS.txt ===
-OPTIONS / HTTP/1.1
-Host: localhost:7080
-User-Agent: Manual-Request
-Accept: */*
+=== REQUISIÇÃO ===
+GET /dir1/texto3.html HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+Priority: u=0, i
 
 
-=== RESPOSTA: resp_OPTIONS.txt ===
-HTTP/1.1 200 OK
-Date: Thu, 25 Sep 2025 02:23:19 GMT
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 404 Not Found
+Date: Wed, 08 Oct 2025 03:51:41 GMT
 Server: Servidor HTTP ver. 0.1 de Eduardo
 Connection: close
-Content-Length: 0
-Content-Type: text/plain
+Content-Type: text/html; charset=utf-8
+Content-Length: 520
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>404 - Página Não Encontrada</title>
+</head>
+<body>
+    <h1 class="error-code">404</h1>
+    <h2 class="error-title">404 - Página Não Encontrada</h2>
+    <div class="error-message">O recurso solicitado não foi encontrado no servidor.
+<br>Arquivo: ./meu-webspace///dir1/texto3.html</div>
+    <div class="error-info">
+        <strong>Data:</strong> Wed, 08 Oct 2025 03:51:41 GMT<br>
+        <strong>Servidor:</strong> Servidor HTTP ver. 0.1 de Eduardo
+    </div>
+</body>
+</html>=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+If-Modified-Since: Wed, 08 Oct 2025 03:44:53 GMT
+Priority: u=0, i
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 04:39:09 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
 
 === FIM ===
 
 
-=== REQUISIÇÃO: reqs/req_TRACE.txt ===
-TRACE /  HTTP/1.1
-Host: localhost:7080
+=== REQUISIÇÃO ===
+GET /teste_welcome HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+Priority: u=0, i
 
 
-=== RESPOSTA: resp/resp_TRACE.txt ===
+=== RESPOSTA: resposta.txt ===
 HTTP/1.1 200 OK
-Date: Thu, 25 Sep 2025 02:23:19 GMT
+Date: Wed, 08 Oct 2025 04:41:16 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 04:38:26 GMT
+Content-Length: 172
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>WELCOME</title>
+    </head>
+    <body>
+        <h1>WELCOME</h1>
+        ESSE WELCOME NÃO É IGNORADO
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET /teste_index2 HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+Priority: u=0, i
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 04:41:58 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 04:37:38 GMT
+Content-Length: 132
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX2</title>
+    </head>
+    <body>
+        <h1>INDEX2</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+TRACE /  HTTP/1.1
+Host: localhost:8080
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 04:43:41 GMT
 Server: Servidor HTTP ver. 0.1 de Eduardo
 Connection: close
 Content-Length: 0
 Content-Type: message/http
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+TRACE /  HTTP/1.1
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 04:44:00 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Content-Length: 0
+Content-Type: message/http
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+POST /path HTTP/1.0\r\n
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 501 Not Implemented
+Date: Wed, 08 Oct 2025 04:45:39 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Content-Type: text/html; charset=utf-8
+Content-Length: 460
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>501 - Não Implementado</title>
+</head>
+<body>
+    <h1 class="error-code">501</h1>
+    <h2 class="error-title">501 - Não Implementado</h2>
+    <div class="error-message">O servidor não suporta a funcionalidade solicitada.</div>
+    <div class="error-info">
+        <strong>Data:</strong> Wed, 08 Oct 2025 04:45:39 GMT<br>
+        <strong>Servidor:</strong> Servidor HTTP ver. 0.1 de Eduardo
+    </div>
+</body>
+</html>=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET /teste_index3 HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+Priority: u=0, i
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 404 Not Found
+Date: Wed, 08 Oct 2025 04:47:35 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Content-Type: text/html; charset=utf-8
+Content-Length: 516
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>404 - Página Não Encontrada</title>
+</head>
+<body>
+    <h1 class="error-code">404</h1>
+    <h2 class="error-title">404 - Página Não Encontrada</h2>
+    <div class="error-message">O recurso solicitado não foi encontrado no servidor.
+<br>Arquivo: ./meu-webspace///teste_index3</div>
+    <div class="error-info">
+        <strong>Data:</strong> Wed, 08 Oct 2025 04:47:35 GMT<br>
+        <strong>Servidor:</strong> Servidor HTTP ver. 0.1 de Eduardo
+    </div>
+</body>
+</html>=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+If-Modified-Since: Wed, 08 Oct 2025 03:44:53 GMT
+Priority: u=0, i
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 04:47:40 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET /dir1/texto3.html HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+Priority: u=0, i
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 404 Not Found
+Date: Wed, 08 Oct 2025 04:47:46 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Content-Type: text/html; charset=utf-8
+Content-Length: 520
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>404 - Página Não Encontrada</title>
+</head>
+<body>
+    <h1 class="error-code">404</h1>
+    <h2 class="error-title">404 - Página Não Encontrada</h2>
+    <div class="error-message">O recurso solicitado não foi encontrado no servidor.
+<br>Arquivo: ./meu-webspace///dir1/texto3.html</div>
+    <div class="error-info">
+        <strong>Data:</strong> Wed, 08 Oct 2025 04:47:46 GMT<br>
+        <strong>Servidor:</strong> Servidor HTTP ver. 0.1 de Eduardo
+    </div>
+</body>
+</html>=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET /teste.html HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+Priority: u=0, i
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 404 Not Found
+Date: Wed, 08 Oct 2025 04:51:04 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Content-Type: text/html; charset=utf-8
+Content-Length: 514
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>404 - Página Não Encontrada</title>
+</head>
+<body>
+    <h1 class="error-code">404</h1>
+    <h2 class="error-title">404 - Página Não Encontrada</h2>
+    <div class="error-message">O recurso solicitado não foi encontrado no servidor.
+<br>Arquivo: ./meu-webspace///teste.html</div>
+    <div class="error-info">
+        <strong>Data:</strong> Wed, 08 Oct 2025 04:51:04 GMT<br>
+        <strong>Servidor:</strong> Servidor HTTP ver. 0.1 de Eduardo
+    </div>
+</body>
+</html>=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET /teste.html HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+Priority: u=0, i
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 404 Not Found
+Date: Wed, 08 Oct 2025 04:56:26 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Content-Type: text/html; charset=utf-8
+Content-Length: 514
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>404 - Página Não Encontrada</title>
+</head>
+<body>
+    <h1 class="error-code">404</h1>
+    <h2 class="error-title">404 - Página Não Encontrada</h2>
+    <div class="error-message">O recurso solicitado não foi encontrado no servidor.
+<br>Arquivo: ./meu-webspace///teste.html</div>
+    <div class="error-info">
+        <strong>Data:</strong> Wed, 08 Oct 2025 04:56:26 GMT<br>
+        <strong>Servidor:</strong> Servidor HTTP ver. 0.1 de Eduardo
+    </div>
+</body>
+</html>=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET /teste.html HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+Priority: u=0, i
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 404 Not Found
+Date: Wed, 08 Oct 2025 04:56:37 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Content-Type: text/html; charset=utf-8
+Content-Length: 514
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>404 - Página Não Encontrada</title>
+</head>
+<body>
+    <h1 class="error-code">404</h1>
+    <h2 class="error-title">404 - Página Não Encontrada</h2>
+    <div class="error-message">O recurso solicitado não foi encontrado no servidor.
+<br>Arquivo: ./meu-webspace///teste.html</div>
+    <div class="error-info">
+        <strong>Data:</strong> Wed, 08 Oct 2025 04:56:37 GMT<br>
+        <strong>Servidor:</strong> Servidor HTTP ver. 0.1 de Eduardo
+    </div>
+</body>
+</html>=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET /dir1/texto2.html HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+Priority: u=0, i
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 403 Forbidden
+Date: Wed, 08 Oct 2025 05:00:53 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Content-Type: text/html; charset=utf-8
+Content-Length: 527
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>403 - Acesso Negado</title>
+</head>
+<body>
+    <h1 class="error-code">403</h1>
+    <h2 class="error-title">403 - Acesso Negado</h2>
+    <div class="error-message">Você não tem permissão para acessar este recurso.
+<br>Arquivo: ./meu-webspace///dir1/texto2.html (Sem permissão de leitura)</div>
+    <div class="error-info">
+        <strong>Data:</strong> Wed, 08 Oct 2025 05:00:53 GMT<br>
+        <strong>Servidor:</strong> Servidor HTTP ver. 0.1 de Eduardo
+    </div>
+</body>
+</html>=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET /dir2/ HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+Priority: u=0, i
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 403 Forbidden
+Date: Wed, 08 Oct 2025 05:01:47 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Content-Type: text/html; charset=utf-8
+Content-Length: 522
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>403 - Acesso Negado</title>
+</head>
+<body>
+    <h1 class="error-code">403</h1>
+    <h2 class="error-title">403 - Acesso Negado</h2>
+    <div class="error-message">Você não tem permissão para acessar este recurso.
+<br>Diretório: ./meu-webspace///dir2/ (Sem permissão de execução)</div>
+    <div class="error-info">
+        <strong>Data:</strong> Wed, 08 Oct 2025 05:01:47 GMT<br>
+        <strong>Servidor:</strong> Servidor HTTP ver. 0.1 de Eduardo
+    </div>
+</body>
+</html>=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1\r\nHost: localhost\r\n\r\n
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 05:36:26 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1\r\nHost: localhost\r\n\r\n
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 05:36:37 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+If-Modified-Since: Wed, 08 Oct 2025 03:44:53 GMT
+Priority: u=0, i
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:31:24 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+If-Modified-Since: Wed, 08 Oct 2025 03:44:53 GMT
+Priority: u=0, i
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:31:37 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+If-Modified-Since: Wed, 08 Oct 2025 03:44:53 GMT
+Priority: u=0, i
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:31:49 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+If-Modified-Since: Wed, 08 Oct 2025 03:44:53 GMT
+Priority: u=0, i
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:31:50 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+If-Modified-Since: Wed, 08 Oct 2025 03:44:53 GMT
+Priority: u=0, i
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:31:50 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+If-Modified-Since: Wed, 08 Oct 2025 03:44:53 GMT
+Priority: u=0, i
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:31:51 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET /dir1/texto1.html HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+If-Modified-Since: Wed, 08 Oct 2025 03:44:53 GMT
+Priority: u=0, i
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:32:20 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 132
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TEXTO1</title>
+    </head>
+    <body>
+        <h1>TEXTO1</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET /teste_welcome HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+If-Modified-Since: Wed, 08 Oct 2025 04:38:26 GMT
+Priority: u=0, i
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:32:28 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 04:38:26 GMT
+Content-Length: 172
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>WELCOME</title>
+    </head>
+    <body>
+        <h1>WELCOME</h1>
+        ESSE WELCOME NÃO É IGNORADO
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET /teste_index2 HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+If-Modified-Since: Wed, 08 Oct 2025 04:37:38 GMT
+Priority: u=0, i
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:32:34 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 04:37:38 GMT
+Content-Length: 132
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX2</title>
+    </head>
+    <body>
+        <h1>INDEX2</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+If-Modified-Since: Wed, 08 Oct 2025 03:44:53 GMT
+Priority: u=0, i
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:33:56 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET /dir1/texto1.html HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+If-Modified-Since: Wed, 08 Oct 2025 03:44:53 GMT
+Priority: u=0, i
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:33:57 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 132
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TEXTO1</title>
+    </head>
+    <body>
+        <h1>TEXTO1</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET /teste_welcome HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+If-Modified-Since: Wed, 08 Oct 2025 04:38:26 GMT
+Priority: u=0, i
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:33:58 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 04:38:26 GMT
+Content-Length: 172
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>WELCOME</title>
+    </head>
+    <body>
+        <h1>WELCOME</h1>
+        ESSE WELCOME NÃO É IGNORADO
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET /teste_index2 HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+If-Modified-Since: Wed, 08 Oct 2025 04:37:38 GMT
+Priority: u=0, i
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:33:58 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 04:37:38 GMT
+Content-Length: 132
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX2</title>
+    </head>
+    <body>
+        <h1>INDEX2</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET /teste_index2 HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: curl/8.5.0
+Accept: */*
+
+
+=== RESPOSTA: resposta.txt ===
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET /dir1/texto2.html HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: curl/8.5.0
+Accept: */*
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 403 ForbDate: WDate: Wed, 08 Oct 2025 10:35:5Server:Server: Servidor HTTP ver. 0.1 de EdConnection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+C
+<!DOCTYPE html>
+<html>
+<head>
+    <title>403 - Acesso Negado</title>
+</head>
+<body>
+    <h1 class="error-code">403</h1>
+    <h2 class="error-title">403 - Acesso Negado</h2>
+    <div class="error-message">Você não tem permissão para acessar este recurso.
+<br>Arquivo: ./meu-webspace///dir1/texto2.html (Sem permissão de leitura)</div>
+    <div class="error-info">
+        <strong>Data:</strong> Wed, 08 Oct 2025 10:35:54 GMT<br>
+        <strong>Servidor:</strong> Servidor HTTP ver. 0.1 de Eduardo
+    </div>
+</body>
+</html>=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: curl/8.5.0
+Accept: */*
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 403 ForbDate: WDate: Wed, 08 Oct 2025 10:35:5Server:Server: Servidor HTTP ver. 0.1 de EdConnection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+C
+<!DOCTYPE html>
+<html>
+<head>
+    <title>403 - Acesso Negado</title>
+</head>
+<body>
+    <h1 class="error-code">403</h1>
+    <h2 class="error-title">403 - Acesso Negado</h2>
+    <div class="error-message">Você não tem permissão para acessar este recurso.
+<br>Arquivo: ./meu-webspace///dir1/texto2.html (Sem permissão de leitura)</div>
+    <div class="error-info">
+        <strong>Data:</strong> Wed, 08 Oct 2025 10:35:54 GMT<br>
+        <strong>Servidor:</strong> Servidor HTTP ver. 0.1 de Eduardo
+    </div>
+</body>
+</html>=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: curl/8.5.0
+Accept: */*
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:40:13 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET /dir1/texto1.html HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: curl/8.5.0
+Accept: */*
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:40:13 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 132
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TEXTO1</title>
+    </head>
+    <body>
+        <h1>TEXTO1</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET /teste_welcome HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: curl/8.5.0
+Accept: */*
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:40:15 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 04:38:26 GMT
+Content-Length: 172
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>WELCOME</title>
+    </head>
+    <body>
+        <h1>WELCOME</h1>
+        ESSE WELCOME NÃO É IGNORADO
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET /dir1/texto1.html HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: curl/8.5.0
+Accept: */*
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:40:43 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 132
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TEXTO1</title>
+    </head>
+    <body>
+        <h1>TEXTO1</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET /teste_welcome HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: curl/8.5.0
+Accept: */*
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:40:44 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 04:38:26 GMT
+Content-Length: 172
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>WELCOME</title>
+    </head>
+    <body>
+        <h1>WELCOME</h1>
+        ESSE WELCOME NÃO É IGNORADO
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET /teste_index2 HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: curl/8.5.0
+Accept: */*
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:40:45 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 04:37:38 GMT
+Content-Length: 132
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX2</title>
+    </head>
+    <body>
+        <h1>INDEX2</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: curl/8.5.0
+Accept: */*
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:40:47 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: curl/8.5.0
+Accept: */*
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:43:02 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: curl/8.5.0
+Accept: */*
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:43:02 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: curl/8.5.0
+Accept: */*
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:43:02 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: curl/8.5.0
+Accept: */*
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:43:02 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: curl/8.5.0
+Accept: */*
+
+
+=== RESPOSTA: resposta.txt ===
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: curl/8.5.0
+Accept: */*
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:49:49 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: curl/8.5.0
+Accept: */*
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:49:49 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: curl/8.5.0
+Accept: */*
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:49:49 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: curl/8.5.0
+Accept: */*
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:49:49 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: curl/8.5.0
+Accept: */*
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:51:19 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: curl/8.5.0
+Accept: */*
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:51:19 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: curl/8.5.0
+Accept: */*
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:51:19 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: curl/8.5.0
+Accept: */*
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:51:19 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: curl/8.5.0
+Accept: */*
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:51:19 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+Priority: u=0, i
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:57:50 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: curl/8.5.0
+Accept: */*
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:58:50 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: curl/8.5.0
+Accept: */*
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:58:50 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: curl/8.5.0
+Accept: */*
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:58:50 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: curl/8.5.0
+Accept: */*
+
+
+=== RESPOSTA: resposta.txt ===
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: curl/8.5.0
+Accept: */*
+
+
+=== RESPOSTA: resposta.txt ===
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: curl/8.5.0
+Accept: */*
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:59:21 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: curl/8.5.0
+Accept: */*
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:59:56 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: curl/8.5.0
+Accept: */*
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:59:56 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: curl/8.5.0
+Accept: */*
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 10:59:56 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: curl/8.5.0
+Accept: */*
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 11:00:36 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: curl/8.5.0
+Accept: */*
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 11:00:36 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: curl/8.5.0
+Accept: */*
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 11:00:36 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: curl/8.5.0
+Accept: */*
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 11:00:55 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: curl/8.5.0
+Accept: */*
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 11:00:55 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+
+=== FIM ===
+
+
+=== REQUISIÇÃO ===
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: curl/8.5.0
+Accept: */*
+
+
+=== RESPOSTA: resposta.txt ===
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 11:00:55 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
 
 === FIM ===
 

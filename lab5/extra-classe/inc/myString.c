@@ -37,9 +37,6 @@ void trim(char *str) {
         return;
     }
     
-    // Retira os espaços finais
-    char *fim = trimEnd(inicio);
-    
     // Desloca o ponteiro da string caso tenha mudado o início
     if (inicio != str) {
         memmove(str, inicio, strlen(inicio) + 1);
@@ -191,4 +188,85 @@ ParametroNode* processarParametros(char *texto_parametros) {
     }
     
     return cabeca;
+}
+
+// Função para extrair método e path da requisição
+int extrair_metodo_path(char *requisicao, char **metodo, char **path) {
+    // Fazer uma cópia para não modificar o original
+    char *copia = strdup(requisicao);
+    char *linha = strtok(copia, "\n");
+    
+    if (!linha) {
+        free(copia);
+        return 0;
+    }
+    
+    // Remover CR se presente no final da linha
+    char *cr = strchr(linha, '\r');
+    if (cr) *cr = '\0';
+    
+    // Extrair método
+    *metodo = strtok(linha, " ");
+    if (!*metodo) {
+        free(copia);
+        return 0;
+    }
+    
+    // Extrair path
+    *path = strtok(NULL, " ");
+    if (!*path) {
+        free(copia);
+        return 0;
+    }
+    
+    // Duplicar as strings para uso posterior
+    *metodo = strdup(*metodo);
+    *path = strdup(*path);
+    
+    free(copia);
+    return 1;
+}
+
+// Função para registrar requisição/resposta no arquivo de registro
+void registrar_requisicao_resposta(char *req_content, const char *resp_file, 
+                                  const char *reg_file, int apenas_cabecalho) {
+    FILE *reg = fopen(reg_file, "a");
+    if (!reg) {
+        perror("Erro ao abrir arquivo de registro");
+        return;
+    }
+    
+    fprintf(reg, "\n=== REQUISIÇÃO ===\n");
+    
+    // Copiar requisição
+    fprintf(reg, "%s\n", req_content);
+    
+    fprintf(reg, "=== RESPOSTA: %s ===\n", resp_file);
+    
+    // Copiar resposta (apenas cabeçalho se especificado)
+    FILE *resp = fopen(resp_file, "r");
+    if (resp) {
+        char line[1024];
+        int in_header = 1;
+        
+        while (fgets(line, sizeof(line), resp)) {
+            if (apenas_cabecalho) {
+                if (strcmp(line, "\r\n") == 0 || strcmp(line, "\n") == 0) {
+                    in_header = 0;
+                    fprintf(reg, "%s", line);
+                    continue;
+                }
+                
+                if (in_header) {
+                    fprintf(reg, "%s", line);
+                }
+            } else {
+                fprintf(reg, "%s", line);
+            }
+        }
+        fclose(resp);
+    }
+    
+    fprintf(reg, "=== FIM ===\n\n");
+    fclose(reg);
 }

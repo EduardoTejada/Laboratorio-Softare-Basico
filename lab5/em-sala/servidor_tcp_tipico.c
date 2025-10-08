@@ -24,10 +24,17 @@ int main(){
         exit(1);
     }
     
+    // permite reusar a porta rapidamente
+    int opt = 1;
+    if (setsockopt(soquete, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
+        perror("Erro no setsockopt");
+        exit(1);
+    }
+
     meu_servidor.sin_family = AF_INET;
     meu_servidor.sin_port = htons(PORT); // htons() converte para representação de rede
     meu_servidor.sin_addr.s_addr = INADDR_ANY; // qualquer endereço válido
-
+    
     if (bind(soquete, (struct sockaddr*)&meu_servidor, sizeof(meu_servidor)) < 0) {
         perror("Erro no bind");
         exit(1);

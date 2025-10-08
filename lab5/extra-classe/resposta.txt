@@ -1,0 +1,18 @@
+HTTP/1.1 200 OK
+Date: Wed, 08 Oct 2025 11:00:55 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Wed, 08 Oct 2025 03:44:53 GMT
+Content-Length: 130
+Content-Type: text/html
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+

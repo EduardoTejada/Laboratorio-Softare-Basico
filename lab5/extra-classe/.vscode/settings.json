@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "atv3_sin.tab.h": "c",
+        "mystring.h": "c",
+        "unistd.h": "c",
+        "servidor_mono_select.C": "cpp"
+    }
+}

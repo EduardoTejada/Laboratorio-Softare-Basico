@@ -11,6 +11,39 @@ touch meu-webspace/index.html
 touch meu-webspace/dir1/texto1.html
 touch meu-webspace/dir1/texto2.html
 
+echo "<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+" > meu-webspace/index.html
+
+echo "<!DOCTYPE html>
+<html>
+    <head>
+        <title>TEXTO1</title>
+    </head>
+    <body>
+        <h1>TEXTO1</h1>
+    </body>
+</html>
+" > meu-webspace/dir1/texto1.html
+
+echo "<!DOCTYPE html>
+<html>
+    <head>
+        <title>TEXTO2</title>
+    </head>
+    <body>
+        <h1>TEXTO2</h1>
+    </body>
+</html>
+" > meu-webspace/dir1/texto2.html
+
 # Diretório principal - leitura, escrita e execução para owner
 chmod 700 meu-webspace
 

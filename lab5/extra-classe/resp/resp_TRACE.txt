@@ -1,6 +1,0 @@
-Status da requisição: 200
-DEBUG: Linha de comando: 'TRACE /  HTTP/1.1'
-DEBUG: Método: 'TRACE', Path: '/'
-Requisição processada e registrada com sucesso!
-ttp
-
