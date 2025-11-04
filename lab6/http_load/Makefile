@@ -11,15 +11,17 @@
 # it may be in /usr/local instead of /usr/local/ssl.
 SSL_TREE =	/usr/lib/ssl
 SSL_DEFS =	-DUSE_SSL
-SSL_INC =	-I$(SSL_TREE)/include
-SSL_LIBS =	-L$(SSL_TREE)/lib -lssl -lcrypto
+SSL_INC =	-I/usr/include/openssl
+SSL_LIBS =	-lssl -lcrypto
+LDFLAGS = -L/home/feec/alunos/183451/.local/lib64 -lssl -lcrypto
+LDLIBS =  -L/home/feec/alunos/183451/.local/lib64 -lssl -lcrypto
+
 
 
 BINDIR =	/usr/local/bin
 MANDIR =	/usr/local/man/man1
 CC =		cc
-CFLAGS =	-O $(SRANDOM_DEFS) $(SSL_DEFS) $(SSL_INC) -ansi -pedantic -U__STRICT_ANSI__ -Wall -Wpointer-arith -Wshadow -Wcast-qual -Wcast-align -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wredundant-decls -Wno-long-long
-LDFLAGS =	-s $(SSL_LIBS) $(SYSV_LIBS)
+CFLAGS = -O -DUSE_SSL -I/home/feec/alunos/183451/.local/include -Wall -Wpointer-arith -Wshadow -Wcast-qual -Wcast-align -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wredundant-decls -Wno-long-long
 
 all:		http_load
 
