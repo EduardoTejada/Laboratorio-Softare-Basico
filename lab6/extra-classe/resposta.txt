@@ -1,0 +1,26 @@
+HTTP/1.1 200 OK
+HTTP/1.1 200 OK
+Date: Tue, 04 Nov 2025 22:05:17 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Last-Modified: Tue, 04 Nov 2025 13:58:46 GMT
+Content-Length: 130
+Content-Type: text/html
+
+Date: Tue, 04 Nov 2025 22:05:17 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>INDEX</title>
+    </head>
+    <body>
+        <h1>INDEX</h1>
+    </body>
+</html>
+
+Connection: close
+Last-Modified: Tue, 04 Nov 2025 13:58:46 GMT
+Content-Length: 130
+Content-Type: text/html
+

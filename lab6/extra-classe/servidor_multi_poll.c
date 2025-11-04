@@ -34,7 +34,8 @@ char *arquivo_resp = "resposta.txt";
 char *arquivo_registro = "registro.txt";
 
 // Configuração de multiprocessamento
-#define MAX_PROCESSOS_FILHO 3  // Número máximo de processos filhos
+//#define MAX_PROCESSOS_FILHO 3  // Número máximo de processos filhos
+int max_processos = 3;
 int processos_ativos = 0;      // Contador de processos ativos
 
 // Prototipos das funçoes do processar-requisicoes.c
@@ -259,18 +260,19 @@ void manipular_sinal_filho(int sig) {
     while ((pid = waitpid(-1, &status, WNOHANG)) > 0) {
         processos_ativos--;
         printf("[SINAL] Processo filho %d terminou. Processos ativos: %d/%d\n", 
-               pid, processos_ativos, MAX_PROCESSOS_FILHO);
+               pid, processos_ativos, max_processos);
     }
 }
 
 int main(int argc, char *argv[]) {
-    if(argc != 3){
-        fprintf(stderr, "Uso: %s [endereco IP] [porta]\n", argv[0]);
+    if(argc != 4){
+        fprintf(stderr, "Uso: %s [endereco IP] [porta] [max_processos]\n", argv[0]);
         exit(1);
     }
 
     char *endereco_ip = argv[1];
     int porta = atoi(argv[2]);
+    max_processos = atoi(argv[3]);
 
     int soquete_servidor, soquete_cliente;
     struct sockaddr_in endereco_servidor, endereco_cliente;
@@ -294,9 +296,9 @@ int main(int argc, char *argv[]) {
 
     while (1) {
         printf("\n================\nAguardando proxima requisiçao\n================\n");
-        printf("PROCESSO PRINCIPAL - Processos ativos: %d/%d\n", processos_ativos, MAX_PROCESSOS_FILHO);
+        printf("PROCESSO PRINCIPAL - Processos ativos: %d/%d\n", processos_ativos, max_processos);
 
-        if (processos_ativos >= MAX_PROCESSOS_FILHO) {
+        if (processos_ativos >= max_processos) {
             printf("LIMITE ATINGIDO: %d processos ativos. Enviando mensagem de ocupado.\n", processos_ativos);
             sleep(2);
             continue;
@@ -368,7 +370,7 @@ int main(int argc, char *argv[]) {
             // PROCESSO PAI
             processos_ativos++;
             printf("[PAI] Processo filho %d criado. Processos ativos: %d/%d\n", 
-                   pid, processos_ativos, MAX_PROCESSOS_FILHO);
+                   pid, processos_ativos, max_processos);
             close(soquete_cliente); // Pai não precisa do socket do cliente
         } else {
             // ERRO NO FORK

@@ -24,6 +24,13 @@ extern int yyparse();
 // Definição das variáveis globais
 CampoNode *lista_completa = NULL;
 CampoNode **ultimo = &lista_completa;
+/*typedef struct {
+    CampoNode *lista_completa;
+    CampoNode **ultimo;
+} parser_context_t;*/
+
+// MUTEX PARA PROTEGER O PARSER
+pthread_mutex_t parser_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 // Variáveis do programa
 char *web_space = "./meu-webspace/";
@@ -32,7 +39,8 @@ char *arquivo_resp = "resposta.txt";
 char *arquivo_registro = "registro.txt";
 
 // Configuração de multithreading
-#define MAX_THREADS 64  // Número máximo de threads (será variado nos testes)
+//#define MAX_THREADS 64  // Número máximo de threads
+int max_threads = 64;
 int threads_ativas = 0; // Contador de threads ativas
 pthread_mutex_t threads_mutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -72,7 +80,18 @@ void processar_requisicao_completa(int soquete_cliente, char *requisicao) {
     printf("%s\n", requisicao);
     printf("[Thread %ld] === FIM DA REQUISIÇÃO ===\n\n", pthread_self());
     
-    // Configurar o parser para ler da string (conforme especificado no roteiro)
+    // Fazer parsing RÁPIDO protegido por mutex
+    pthread_mutex_lock(&parser_mutex);
+    YY_BUFFER_STATE buffer = yy_scan_string(requisicao);
+    yyparse();
+    yy_delete_buffer(buffer);
+    pthread_mutex_unlock(&parser_mutex);
+    
+    /*
+    // PROTEGER O PARSER COM MUTEX
+    pthread_mutex_lock(&parser_mutex);
+
+    // Configurar o parser para ler da string
     YY_BUFFER_STATE buffer = yy_scan_string(requisicao);
     
     // Executar parser
@@ -84,12 +103,12 @@ void processar_requisicao_completa(int soquete_cliente, char *requisicao) {
     imprimirLista(lista_completa);
     
     // Limpar buffer do lexer
-    yy_delete_buffer(buffer);
+    yy_delete_buffer(buffer);*/
     
     // Processar requisição e gerar resposta em arquivo
     printf("[Thread %ld] === EXECUTANDO REQUISIÇÃO ===\n", pthread_self());
     
-    // Usar redirecionamento temporário para arquivo (apenas para esta versão)
+    // Usar redirecionamento temporário para arquivo
     int stdout_backup = dup(STDOUT_FILENO);
     FILE *temp_resp = fopen(arquivo_resp, "w");
     if (!temp_resp) {
@@ -99,7 +118,7 @@ void processar_requisicao_completa(int soquete_cliente, char *requisicao) {
     }
     dup2(fileno(temp_resp), STDOUT_FILENO);
     
-    // Processar a requisição (isso vai escrever no arquivo)
+    // Processar a requisição
     int status = processar_requisicao(requisicao, web_space, arquivo_resp);
     
     // Restaurar stdout
@@ -113,22 +132,14 @@ void processar_requisicao_completa(int soquete_cliente, char *requisicao) {
     // Enviar resposta para o cliente
     enviar_resposta_para_cliente(soquete_cliente);
     
-    // Registrar no arquivo de registro
-    char *metodo, *path;
-    if (extrair_metodo_path(requisicao, &metodo, &path)) {
-        int apenas_cabecalho = (strcmp(metodo, "HEAD") == 0);
-        registrar_requisicao_resposta(requisicao, arquivo_resp, arquivo_registro, apenas_cabecalho);
-        
-        free(metodo);
-        free(path);
-    }
-    
-    printf("[Thread %ld] Requisição processada e resposta enviada!\n", pthread_self());
-
-    // Limpar lista para próxima requisição
+    // Limpar lista (proteger com mutex)
+    pthread_mutex_lock(&parser_mutex);
     liberarLista(lista_completa);
     lista_completa = NULL;
     ultimo = &lista_completa;
+    pthread_mutex_unlock(&parser_mutex);
+    
+    printf("[Thread %ld] Requisição processada!\n", pthread_self());
 }
 
 // Função principal de processamento
@@ -167,6 +178,58 @@ int processar_requisicao(char *requisicao, const char *web_space, const char *ar
     return status_code;
 }
 
+/*
+void processar_requisicao_completa(int soquete_cliente, char *requisicao) {
+    printf("[Thread %ld] === REQUISIÇÃO RECEBIDA ===\n", pthread_self());
+    printf("%s\n", requisicao);
+    printf("[Thread %ld] === FIM DA REQUISIÇÃO ===\n\n", pthread_self());
+    
+    // PROCESSAMENTO SIMPLIFICADO SEM PARSER
+    printf("[Thread %ld] === EXECUTANDO REQUISIÇÃO (SEM PARSER) ===\n", pthread_self());
+    
+    // Usar redirecionamento temporário para arquivo
+    int stdout_backup = dup(STDOUT_FILENO);
+    FILE *temp_resp = fopen(arquivo_resp, "w");
+    if (!temp_resp) {
+        perror("Erro ao criar arquivo de resposta temporário");
+        close(soquete_cliente);
+        return;
+    }
+    dup2(fileno(temp_resp), STDOUT_FILENO);
+    
+    // Processar a requisição SEM o parser
+    // Usar uma função simplificada que não depende do parser
+    int status = processar_requisicao_simples(requisicao, web_space, arquivo_resp);
+    
+    // Restaurar stdout
+    fflush(stdout);
+    dup2(stdout_backup, STDOUT_FILENO);
+    close(stdout_backup);
+    fclose(temp_resp);
+    
+    printf("[Thread %ld] Status da requisição: %d\n", pthread_self(), status);
+
+    // Enviar resposta para o cliente
+    enviar_resposta_para_cliente(soquete_cliente);
+    
+    printf("[Thread %ld] Requisição processada e resposta enviada!\n", pthread_self());
+}
+
+// Função simplificada sem parser
+int processar_requisicao_simples(char *requisicao, const char *web_space, const char *arquivo_resp) {
+    // Extrair método e path de forma simples
+    char *metodo = "GET"; // Simplificação
+    char *path = "/index.html"; // Simplificação
+    
+    char *argv[] = {"servidor", (char*)web_space, path, NULL};
+    
+    if (strcmp(metodo, "GET") == 0) {
+        return process_GET(argv, "close");
+    }
+    
+    return HTTP_OK;
+}*/
+
 // Função para configurar conexão de rede
 void conectar_na_internet(char *endereco_ip, int porta, int* soquete, struct sockaddr_in* endereco_servidor) {
     // cria socket TCP
@@ -200,11 +263,15 @@ void conectar_na_internet(char *endereco_ip, int porta, int* soquete, struct soc
         printf("Servidor escutando em %s:%d\n", endereco_ip, porta);
     }
 
+    printf("DEBUG: Tentando bind em %s:%d\n", endereco_ip, porta);
+
     if (bind(*soquete, (struct sockaddr*)endereco_servidor, sizeof(*endereco_servidor)) < 0) {
         perror("Erro no bind");
         fprintf(stderr, "IP: %s, Porta: %d\n", endereco_ip, porta);
         exit(1);
     }
+
+    printf("DEBUG: Bind bem-sucedido em %s:%d\n", endereco_ip, porta);
 
     if (listen(*soquete, 5) < 0) {
         perror("Erro no listen");
@@ -290,7 +357,7 @@ void* thread_trata_conexao(void* arg) {
     pthread_mutex_lock(&threads_mutex);
     threads_ativas--;
     printf("[Thread %ld] Terminada. Threads ativas: %d/%d\n", 
-           pthread_self(), threads_ativas, MAX_THREADS);
+           pthread_self(), threads_ativas, max_threads);
     pthread_mutex_unlock(&threads_mutex);
     
     free(data);
@@ -298,13 +365,14 @@ void* thread_trata_conexao(void* arg) {
 }
 
 int main(int argc, char *argv[]) {
-    if(argc != 3){
-        fprintf(stderr, "Uso: %s [endereco IP] [porta]\n", argv[0]);
+    if(argc != 4){
+        fprintf(stderr, "Uso: %s [endereco IP] [porta] [max_threads]\n", argv[0]);
         exit(1);
     }
 
     char *endereco_ip = argv[1];
     int porta = atoi(argv[2]);
+    max_threads = atoi(argv[3]);
 
     int soquete_servidor, soquete_cliente;
     struct sockaddr_in endereco_servidor, endereco_cliente;
@@ -314,14 +382,14 @@ int main(int argc, char *argv[]) {
 
     printf("Servidor HTTP multi-thread pronto para receber conexões...\n");
     printf("Webspace: %s\n", web_space);
-    printf("Máximo de threads: %d\n", MAX_THREADS);
+    printf("Máximo de threads: %d\n", max_threads);
 
     while (1) {
         printf("\n================\nAguardando próxima requisição\n================\n");
-        printf("Threads ativas: %d/%d\n", threads_ativas, MAX_THREADS);
+        printf("Threads ativas: %d/%d\n", threads_ativas, max_threads);
 
         // Verificar limite de threads
-        if (threads_ativas >= MAX_THREADS) {
+        if (threads_ativas >= max_threads) {
             printf("LIMITE ATINGIDO: %d threads ativas. Aguardando...\n", threads_ativas);
             sleep(2);
             continue;
@@ -381,7 +449,7 @@ int main(int argc, char *argv[]) {
             pthread_mutex_lock(&threads_mutex);
             threads_ativas++;
             printf("[Main] Thread %ld criada. Threads ativas: %d/%d\n", 
-                   thread_id, threads_ativas, MAX_THREADS);
+                   thread_id, threads_ativas, max_threads);
             pthread_mutex_unlock(&threads_mutex);
             
             // Usar detach para a thread se auto-liberar ao terminar
@@ -395,6 +463,10 @@ int main(int argc, char *argv[]) {
     }
 
     close(soquete_servidor);
+
+    // DESTRUIR O MUTEX AO FINAL
+    pthread_mutex_destroy(&parser_mutex);
     pthread_mutex_destroy(&threads_mutex);
+    
     return 0;
 }
