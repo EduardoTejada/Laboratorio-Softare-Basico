@@ -347,6 +347,34 @@ int aceitar_conexao_simples(int soquete_servidor) {
     return soquete_cliente;
 }
 
+// Aceitação com preenchimento correto dos dados do cliente
+int aceitar_conexao_completa(int soquete_servidor, struct sockaddr_in *endereco_cliente, char *client_ip, int *client_port) {
+    socklen_t tam_endereco = sizeof(*endereco_cliente);
+    
+    // Configurar socket como não-bloqueante temporariamente
+    int flags = fcntl(soquete_servidor, F_GETFL, 0);
+    fcntl(soquete_servidor, F_SETFL, flags | O_NONBLOCK);
+    
+    int soquete_cliente = accept(soquete_servidor, (struct sockaddr*)endereco_cliente, &tam_endereco);
+    
+    // Restaurar modo bloqueante
+    fcntl(soquete_servidor, F_SETFL, flags);
+    
+    if (soquete_cliente < 0) {
+        if (errno == EAGAIN || errno == EWOULDBLOCK) {
+            return -1; // Não há conexões pendentes
+        }
+        perror("Erro no accept");
+        return -1;
+    }
+    
+    // Preencher dados do cliente
+    inet_ntop(AF_INET, &endereco_cliente->sin_addr, client_ip, INET_ADDRSTRLEN);
+    *client_port = ntohs(endereco_cliente->sin_port);
+    
+    return soquete_cliente;
+}
+
 int main(int argc, char *argv[]) {
     if(argc != 4){
         fprintf(stderr, "Uso: %s [endereco IP] [porta] [max_threads]\n", argv[0]);
@@ -357,10 +385,9 @@ int main(int argc, char *argv[]) {
     int porta = atoi(argv[2]);
     max_threads = atoi(argv[3]);
 
-    int soquete_servidor, soquete_cliente;
-    struct sockaddr_in endereco_servidor, endereco_cliente;
-    socklen_t tam_endereco = sizeof(endereco_cliente);
-
+    int soquete_servidor;
+    struct sockaddr_in endereco_servidor;
+    
     conectar_na_internet(endereco_ip, porta, &soquete_servidor, &endereco_servidor);
 
     printf("Servidor HTTP multi-thread pronto para receber conexões...\n");
@@ -368,31 +395,34 @@ int main(int argc, char *argv[]) {
     printf("Máximo de threads: %d\n", max_threads);
 
     while (1) {
-        printf("\n================\nAguardando próxima requisição\n================\n");
         printf("Threads ativas: %d/%d\n", threads_ativas, max_threads);
 
-        soquete_cliente = aceitar_conexao_simples(soquete_servidor);
+        struct sockaddr_in endereco_cliente;
+        char client_ip[INET_ADDRSTRLEN];
+        int client_port;
+        
+        // Aceitar conexão com dados completos do cliente
+        int soquete_cliente = aceitar_conexao_completa(soquete_servidor, &endereco_cliente, client_ip, &client_port);
         
         if (soquete_cliente < 0) {
-            // Não há conexão pendente, continuar
+            // Não há conexão pendente, pausa breve para não consumir 100% CPU
+            usleep(10000); // 10ms
             continue;
         }
         
-        // Mostrar quem conectou
-        char client_ip[INET_ADDRSTRLEN];
-        inet_ntop(AF_INET, &endereco_cliente.sin_addr, client_ip, INET_ADDRSTRLEN);
-        int client_port = ntohs(endereco_cliente.sin_port);
         printf("=== NOVA CONEXÃO de %s:%d ===\n", client_ip, client_port);
 
-        // Verificar limite de threads ANTES de criar
+        // VERIFICAÇÃO DE LIMITE CORRIGIDA (sem race condition)
         pthread_mutex_lock(&threads_mutex);
         if (threads_ativas >= max_threads) {
             pthread_mutex_unlock(&threads_mutex);
             printf("LIMITE ATINGIDO: %d threads. Rejeitando conexão.\n", threads_ativas);
+            const char *error_msg = "HTTP/1.1 503 Service Unavailable\r\n\r\n";
+            write(soquete_cliente, error_msg, strlen(error_msg));
             close(soquete_cliente);
             continue;
         }
-        threads_ativas++;  // INCREMENTAR AQUI
+        threads_ativas++;
         pthread_mutex_unlock(&threads_mutex);
 
         // Preparar dados para a thread
@@ -400,7 +430,7 @@ int main(int argc, char *argv[]) {
         if (!thread_data) {
             perror("Erro ao alocar memória para thread");
             pthread_mutex_lock(&threads_mutex);
-            threads_ativas--;  // DECREMENTAR SE FALHAR
+            threads_ativas--;
             pthread_mutex_unlock(&threads_mutex);
             close(soquete_cliente);
             continue;
@@ -416,20 +446,19 @@ int main(int argc, char *argv[]) {
         
         if (rc == 0) {
             printf("[Main] Thread %ld criada. Threads ativas: %d/%d\n", 
-                thread_id, threads_ativas, max_threads);
+                   thread_id, threads_ativas, max_threads);
             pthread_detach(thread_id);
         } else {
             perror("Erro ao criar thread");
             pthread_mutex_lock(&threads_mutex);
-            threads_ativas--;  // DECREMENTAR SE FALHAR
+            threads_ativas--;
             pthread_mutex_unlock(&threads_mutex);
             free(thread_data);
             close(soquete_cliente);
         }
     }
-    close(soquete_servidor);
 
-    // DESTRUIR O MUTEX AO FINAL
+    close(soquete_servidor);
     pthread_mutex_destroy(&parser_mutex);
     pthread_mutex_destroy(&threads_mutex);
     
