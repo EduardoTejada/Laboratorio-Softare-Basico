@@ -74,20 +74,28 @@ void enviar_resposta_para_cliente(int soquete_cliente) {
     fclose(resp_file);
 }
 
+
 // Função para processar requisição completa
 void processar_requisicao_completa(int soquete_cliente, char *requisicao) {
+    printf("[Thread %ld] === REQUISIÇÃO RECEBIDA ===\n", pthread_self());
+    
+    // APENAS PARA TESTE - resposta fixa sem parser
+    const char *resposta = 
+        "HTTP/1.1 200 OK\r\n"
+        "Content-Type: text/html\r\n"
+        "Content-Length: 25\r\n"
+        "\r\n"
+        "<h1>Resposta Teste</h1>";
+    
+    write(soquete_cliente, resposta, strlen(resposta));
+    close(soquete_cliente);
+    
+    printf("[Thread %ld] Resposta enviada (simples)\n", pthread_self());
+    /*
     printf("[Thread %ld] === REQUISIÇÃO RECEBIDA ===\n", pthread_self());
     printf("%s\n", requisicao);
     printf("[Thread %ld] === FIM DA REQUISIÇÃO ===\n\n", pthread_self());
     
-    // Fazer parsing RÁPIDO protegido por mutex
-    pthread_mutex_lock(&parser_mutex);
-    YY_BUFFER_STATE buffer = yy_scan_string(requisicao);
-    yyparse();
-    yy_delete_buffer(buffer);
-    pthread_mutex_unlock(&parser_mutex);
-    
-    /*
     // PROTEGER O PARSER COM MUTEX
     pthread_mutex_lock(&parser_mutex);
 
@@ -97,13 +105,14 @@ void processar_requisicao_completa(int soquete_cliente, char *requisicao) {
     // Executar parser
     printf("[Thread %ld] === PROCESSANDO REQUISIÇÃO COM PARSER ===\n", pthread_self());
     yyparse();
-    
-    // Imprimir resultado da análise
-    printf("[Thread %ld] === ESTRUTURA DE DADOS DO PARSER ===\n", pthread_self());
-    imprimirLista(lista_completa);
-    
+
     // Limpar buffer do lexer
-    yy_delete_buffer(buffer);*/
+    yy_delete_buffer(buffer);
+
+    // Imprimir resultado da análise
+    //printf("[Thread %ld] === ESTRUTURA DE DADOS DO PARSER ===\n", pthread_self());
+    //imprimirLista(lista_completa);
+    
     
     // Processar requisição e gerar resposta em arquivo
     printf("[Thread %ld] === EXECUTANDO REQUISIÇÃO ===\n", pthread_self());
@@ -132,14 +141,14 @@ void processar_requisicao_completa(int soquete_cliente, char *requisicao) {
     // Enviar resposta para o cliente
     enviar_resposta_para_cliente(soquete_cliente);
     
-    // Limpar lista (proteger com mutex)
-    pthread_mutex_lock(&parser_mutex);
+    // Limpar lista
     liberarLista(lista_completa);
     lista_completa = NULL;
     ultimo = &lista_completa;
+    
     pthread_mutex_unlock(&parser_mutex);
     
-    printf("[Thread %ld] Requisição processada!\n", pthread_self());
+    printf("[Thread %ld] Requisição processada!\n", pthread_self());*/
 }
 
 // Função principal de processamento
@@ -178,57 +187,6 @@ int processar_requisicao(char *requisicao, const char *web_space, const char *ar
     return status_code;
 }
 
-/*
-void processar_requisicao_completa(int soquete_cliente, char *requisicao) {
-    printf("[Thread %ld] === REQUISIÇÃO RECEBIDA ===\n", pthread_self());
-    printf("%s\n", requisicao);
-    printf("[Thread %ld] === FIM DA REQUISIÇÃO ===\n\n", pthread_self());
-    
-    // PROCESSAMENTO SIMPLIFICADO SEM PARSER
-    printf("[Thread %ld] === EXECUTANDO REQUISIÇÃO (SEM PARSER) ===\n", pthread_self());
-    
-    // Usar redirecionamento temporário para arquivo
-    int stdout_backup = dup(STDOUT_FILENO);
-    FILE *temp_resp = fopen(arquivo_resp, "w");
-    if (!temp_resp) {
-        perror("Erro ao criar arquivo de resposta temporário");
-        close(soquete_cliente);
-        return;
-    }
-    dup2(fileno(temp_resp), STDOUT_FILENO);
-    
-    // Processar a requisição SEM o parser
-    // Usar uma função simplificada que não depende do parser
-    int status = processar_requisicao_simples(requisicao, web_space, arquivo_resp);
-    
-    // Restaurar stdout
-    fflush(stdout);
-    dup2(stdout_backup, STDOUT_FILENO);
-    close(stdout_backup);
-    fclose(temp_resp);
-    
-    printf("[Thread %ld] Status da requisição: %d\n", pthread_self(), status);
-
-    // Enviar resposta para o cliente
-    enviar_resposta_para_cliente(soquete_cliente);
-    
-    printf("[Thread %ld] Requisição processada e resposta enviada!\n", pthread_self());
-}
-
-// Função simplificada sem parser
-int processar_requisicao_simples(char *requisicao, const char *web_space, const char *arquivo_resp) {
-    // Extrair método e path de forma simples
-    char *metodo = "GET"; // Simplificação
-    char *path = "/index.html"; // Simplificação
-    
-    char *argv[] = {"servidor", (char*)web_space, path, NULL};
-    
-    if (strcmp(metodo, "GET") == 0) {
-        return process_GET(argv, "close");
-    }
-    
-    return HTTP_OK;
-}*/
 
 // Função para configurar conexão de rede
 void conectar_na_internet(char *endereco_ip, int porta, int* soquete, struct sockaddr_in* endereco_servidor) {
@@ -363,6 +321,7 @@ void* thread_trata_conexao(void* arg) {
     free(data);
     pthread_exit(NULL);
 }
+
 
 int main(int argc, char *argv[]) {
     if(argc != 4){
