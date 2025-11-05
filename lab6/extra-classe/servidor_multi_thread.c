@@ -77,7 +77,7 @@ void enviar_resposta_para_cliente(int soquete_cliente) {
 
 // Função para processar requisição completa
 void processar_requisicao_completa(int soquete_cliente, char *requisicao) {
-    printf("[Thread %ld] === REQUISIÇÃO RECEBIDA ===\n", pthread_self());
+    /*printf("[Thread %ld] === REQUISIÇÃO RECEBIDA ===\n", pthread_self());
     
     // APENAS PARA TESTE - resposta fixa sem parser
     const char *resposta = 
@@ -91,7 +91,7 @@ void processar_requisicao_completa(int soquete_cliente, char *requisicao) {
     close(soquete_cliente);
     
     printf("[Thread %ld] Resposta enviada (simples)\n", pthread_self());
-    /*
+    */
     printf("[Thread %ld] === REQUISIÇÃO RECEBIDA ===\n", pthread_self());
     printf("%s\n", requisicao);
     printf("[Thread %ld] === FIM DA REQUISIÇÃO ===\n\n", pthread_self());
@@ -148,7 +148,7 @@ void processar_requisicao_completa(int soquete_cliente, char *requisicao) {
     
     pthread_mutex_unlock(&parser_mutex);
     
-    printf("[Thread %ld] Requisição processada!\n", pthread_self());*/
+    printf("[Thread %ld] Requisição processada!\n", pthread_self());
 }
 
 // Função principal de processamento
@@ -322,6 +322,30 @@ void* thread_trata_conexao(void* arg) {
     pthread_exit(NULL);
 }
 
+int aceitar_conexao_simples(int soquete_servidor) {
+    struct sockaddr_in endereco_cliente;
+    socklen_t tam_endereco = sizeof(endereco_cliente);
+    
+    // Aceitar sem bloquear - configurar socket como não-bloqueante
+    int flags = fcntl(soquete_servidor, F_GETFL, 0);
+    fcntl(soquete_servidor, F_SETFL, flags | O_NONBLOCK);
+    
+    int soquete_cliente = accept(soquete_servidor, (struct sockaddr*)&endereco_cliente, &tam_endereco);
+    
+    // Restaurar modo bloqueante
+    fcntl(soquete_servidor, F_SETFL, flags);
+    
+    if (soquete_cliente < 0) {
+        if (errno == EAGAIN || errno == EWOULDBLOCK) {
+            // Não há conexões pendentes - isso é normal
+            return -1;
+        }
+        perror("Erro no accept");
+        return -1;
+    }
+    
+    return soquete_cliente;
+}
 
 int main(int argc, char *argv[]) {
     if(argc != 4){
@@ -347,37 +371,10 @@ int main(int argc, char *argv[]) {
         printf("\n================\nAguardando próxima requisição\n================\n");
         printf("Threads ativas: %d/%d\n", threads_ativas, max_threads);
 
-        // Verificar limite de threads
-        if (threads_ativas >= max_threads) {
-            printf("LIMITE ATINGIDO: %d threads ativas. Aguardando...\n", threads_ativas);
-            sleep(2);
-            continue;
-        }
-        
-        // USAR POLL PARA ACEITAR CONEXÕES COM TIMEOUT E PROTEÇÃO EINTR
-        int status_aceitacao;
-        do {
-            status_aceitacao = aceitar_com_timeout_poll(soquete_servidor, 4);
-        } while (status_aceitacao == -3); // Re-tentar se foi EINTR
-        
-        if (status_aceitacao == -2) {
-            // Timeout - continuar loop sem erro
-            printf("Continuando após timeout de aceitação\n");
-            continue;
-        } else if (status_aceitacao == -1) {
-            // Erro - pausa antes de continuar
-            printf("Erro na aceitação, continuando em 2 segundos\n");
-            sleep(2);
-            continue;
-        }
-
-        // ACEITAR CONEXÃO COM PROTEÇÃO EINTR
-        do {
-            soquete_cliente = accept(soquete_servidor, (struct sockaddr*)&endereco_cliente, &tam_endereco);
-        } while (soquete_cliente == -1 && errno == EINTR);
+        soquete_cliente = aceitar_conexao_simples(soquete_servidor);
         
         if (soquete_cliente < 0) {
-            perror("Erro no accept após poll");
+            // Não há conexão pendente, continuar
             continue;
         }
         
@@ -387,10 +384,24 @@ int main(int argc, char *argv[]) {
         int client_port = ntohs(endereco_cliente.sin_port);
         printf("=== NOVA CONEXÃO de %s:%d ===\n", client_ip, client_port);
 
+        // Verificar limite de threads ANTES de criar
+        pthread_mutex_lock(&threads_mutex);
+        if (threads_ativas >= max_threads) {
+            pthread_mutex_unlock(&threads_mutex);
+            printf("LIMITE ATINGIDO: %d threads. Rejeitando conexão.\n", threads_ativas);
+            close(soquete_cliente);
+            continue;
+        }
+        threads_ativas++;  // INCREMENTAR AQUI
+        pthread_mutex_unlock(&threads_mutex);
+
         // Preparar dados para a thread
         thread_data_t* thread_data = malloc(sizeof(thread_data_t));
         if (!thread_data) {
             perror("Erro ao alocar memória para thread");
+            pthread_mutex_lock(&threads_mutex);
+            threads_ativas--;  // DECREMENTAR SE FALHAR
+            pthread_mutex_unlock(&threads_mutex);
             close(soquete_cliente);
             continue;
         }
@@ -399,28 +410,23 @@ int main(int argc, char *argv[]) {
         strncpy(thread_data->client_ip, client_ip, INET_ADDRSTRLEN);
         thread_data->client_port = client_port;
         
-        // CRIAR THREAD PARA ATENDER REQUISIÇÃO
+        // CRIAR THREAD
         pthread_t thread_id;
         int rc = pthread_create(&thread_id, NULL, thread_trata_conexao, thread_data);
         
         if (rc == 0) {
-            // Thread criada com sucesso
-            pthread_mutex_lock(&threads_mutex);
-            threads_ativas++;
             printf("[Main] Thread %ld criada. Threads ativas: %d/%d\n", 
-                   thread_id, threads_ativas, max_threads);
-            pthread_mutex_unlock(&threads_mutex);
-            
-            // Usar detach para a thread se auto-liberar ao terminar
+                thread_id, threads_ativas, max_threads);
             pthread_detach(thread_id);
         } else {
-            // Erro na criação da thread
             perror("Erro ao criar thread");
+            pthread_mutex_lock(&threads_mutex);
+            threads_ativas--;  // DECREMENTAR SE FALHAR
+            pthread_mutex_unlock(&threads_mutex);
             free(thread_data);
             close(soquete_cliente);
         }
     }
-
     close(soquete_servidor);
 
     // DESTRUIR O MUTEX AO FINAL
