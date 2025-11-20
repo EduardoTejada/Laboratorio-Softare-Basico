@@ -1,5 +1,6 @@
+#line 2 "atv3_lex.c"
 
-#line 3 "lex.yy.c"
+#line 4 "atv3_lex.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -630,8 +631,8 @@ void extern yyerror (char *s);
 
 int yywrap(void);
 
-#line 634 "lex.yy.c"
-#line 635 "lex.yy.c"
+#line 635 "atv3_lex.c"
+#line 636 "atv3_lex.c"
 
 #define INITIAL 0
 
@@ -850,7 +851,7 @@ YY_DECL
 	{
 #line 22 "atv3_lex.l"
 
-#line 854 "lex.yy.c"
+#line 855 "atv3_lex.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -983,7 +984,7 @@ YY_RULE_SETUP
 #line 47 "atv3_lex.l"
 ECHO;
 	YY_BREAK
-#line 987 "lex.yy.c"
+#line 988 "atv3_lex.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
