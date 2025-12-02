@@ -1,0 +1,23 @@
+HTTP/1.1 404 Not Found
+Date: Tue, 02 Dec 2025 23:48:35 GMT
+Server: Servidor HTTP ver. 0.1 de Eduardo
+Connection: close
+Content-Type: text/html; charset=utf-8
+Content-Length: 504
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>404 - Página Não Encontrada</title>
+</head>
+<body>
+    <h1 class="error-code">404</h1>
+    <h2 class="error-title">404 - Página Não Encontrada</h2>
+    <div class="error-message">O recurso solicitado não foi encontrado no servidor.
+<br>Arquivo: ./meu-webspace///</div>
+    <div class="error-info">
+        <strong>Data:</strong> Tue, 02 Dec 2025 23:48:35 GMT<br>
+        <strong>Servidor:</strong> Servidor HTTP ver. 0.1 de Eduardo
+    </div>
+</body>
+</html>
