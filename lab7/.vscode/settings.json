@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "format": "c",
-        "mylist.h": "c"
+        "mylist.h": "c",
+        "dirent.h": "c"
     }
 }

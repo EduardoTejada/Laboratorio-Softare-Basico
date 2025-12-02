@@ -13,6 +13,7 @@
 #include <poll.h>
 #include <errno.h>
 #include <pthread.h>
+#include "inc/myString.h"
 
 /* declarações vindas do Flex */
 typedef struct yy_buffer_state *YY_BUFFER_STATE;
@@ -46,7 +47,8 @@ pthread_mutex_t threads_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 // Protótipos das funções do processar-requisicoes.c
 void send_error_page(int status, char* connection, char* additional_info);
-int process_GET(char* caminhos[], char* connection);
+int process_GET(char* caminhos[], char* connection, CampoNode* lista_campos);
+int process_POST(char* caminhos[], char* connection, CampoNode* lista_campos, const char* corpo_post);
 int process_HEAD(char* caminhos[], char* connection);
 int process_OPTIONS(char* connection);
 int process_TRACE(char* connection);
@@ -75,23 +77,73 @@ void enviar_resposta_para_cliente(int soquete_cliente) {
 }
 
 
+// Função auxiliar para extrair corpo da requisição
+char* extrair_corpo_requisicao(const char* requisicao) {
+    // Encontrar o final dos headers (linha em branco)
+    char* fim_headers = strstr(requisicao, "\r\n\r\n");
+    if (fim_headers == NULL) {
+        fim_headers = strstr(requisicao, "\n\n");
+        if (fim_headers == NULL) {
+            return NULL; // Sem corpo
+        }
+        fim_headers += 2; // Pular \n\n
+    } else {
+        fim_headers += 4; // Pular \r\n\r\n
+    }
+    
+    if (*fim_headers == '\0') {
+        return NULL; // Corpo vazio
+    }
+    
+    fprintf(stderr, "DEBUG: Corpo extraído: %s\n", fim_headers);
+    return strdup(fim_headers);
+}
+
+
+// Função principal de processamento
+int processar_requisicao(char *requisicao, const char *web_space, const char *arquivo_resp, CampoNode* lista_campos) {
+    char *metodo, *path;
+    
+    if (!extrair_metodo_path(requisicao, &metodo, &path)) {
+        send_error_page(HTTP_INTERNAL_ERROR, "close", "Falha ao extrair método e path");
+        return HTTP_INTERNAL_ERROR;
+    }
+    
+    int status_code;
+    char *connection = "close";
+    
+    // Preparar argumentos para as funções de processamento
+    char *argv[] = {"servidor", (char*)web_space, (char*)path, NULL};
+    
+    if (strcmp(metodo, "GET") == 0) {
+        status_code = process_GET(argv, connection, lista_campos);
+    } else if (strcmp(metodo, "HEAD") == 0) {
+        status_code = process_HEAD(argv, connection);
+    } else if (strcmp(metodo, "OPTIONS") == 0) {
+        status_code = process_OPTIONS(connection);
+    } else if (strcmp(metodo, "TRACE") == 0) {
+        status_code = process_TRACE(connection);
+    } else if (strcmp(metodo, "POST") == 0) {
+        char* corpo = extrair_corpo_requisicao(requisicao);
+        status_code = process_POST(argv, connection, lista_campos, corpo);
+        if (corpo) free(corpo);
+    } else if (strcmp(metodo, "PUT") == 0) {
+        send_error_page(HTTP_NOT_IMPLEMENTED, connection, metodo);
+        status_code = HTTP_NOT_IMPLEMENTED;
+    } else {
+        send_error_page(HTTP_METHOD_NOT_ALLOWED, connection, metodo);
+        status_code = HTTP_METHOD_NOT_ALLOWED;
+    }
+    
+    free(metodo);
+    free(path);
+    return status_code;
+}
+
+
+
 // Função para processar requisição completa
 void processar_requisicao_completa(int soquete_cliente, char *requisicao) {
-    /*printf("[Thread %ld] === REQUISIÇÃO RECEBIDA ===\n", pthread_self());
-    
-    // APENAS PARA TESTE - resposta fixa sem parser
-    const char *resposta = 
-        "HTTP/1.1 200 OK\r\n"
-        "Content-Type: text/html\r\n"
-        "Content-Length: 25\r\n"
-        "\r\n"
-        "<h1>Resposta Teste</h1>";
-    
-    write(soquete_cliente, resposta, strlen(resposta));
-    close(soquete_cliente);
-    
-    printf("[Thread %ld] Resposta enviada (simples)\n", pthread_self());
-    */
     printf("[Thread %ld] === REQUISIÇÃO RECEBIDA ===\n", pthread_self());
     printf("%s\n", requisicao);
     printf("[Thread %ld] === FIM DA REQUISIÇÃO ===\n\n", pthread_self());
@@ -108,11 +160,6 @@ void processar_requisicao_completa(int soquete_cliente, char *requisicao) {
 
     // Limpar buffer do lexer
     yy_delete_buffer(buffer);
-
-    // Imprimir resultado da análise
-    //printf("[Thread %ld] === ESTRUTURA DE DADOS DO PARSER ===\n", pthread_self());
-    //imprimirLista(lista_completa);
-    
     
     // Processar requisição e gerar resposta em arquivo
     printf("[Thread %ld] === EXECUTANDO REQUISIÇÃO ===\n", pthread_self());
@@ -128,7 +175,7 @@ void processar_requisicao_completa(int soquete_cliente, char *requisicao) {
     dup2(fileno(temp_resp), STDOUT_FILENO);
     
     // Processar a requisição
-    int status = processar_requisicao(requisicao, web_space, arquivo_resp);
+    int status = processar_requisicao(requisicao, web_space, arquivo_resp, lista_completa);
     
     // Restaurar stdout
     fflush(stdout);
@@ -149,42 +196,6 @@ void processar_requisicao_completa(int soquete_cliente, char *requisicao) {
     pthread_mutex_unlock(&parser_mutex);
     
     printf("[Thread %ld] Requisição processada!\n", pthread_self());
-}
-
-// Função principal de processamento
-int processar_requisicao(char *requisicao, const char *web_space, const char *arquivo_resp) {
-    char *metodo, *path;
-    
-    if (!extrair_metodo_path(requisicao, &metodo, &path)) {
-        send_error_page(HTTP_INTERNAL_ERROR, "close", "Falha ao extrair método e path");
-        return HTTP_INTERNAL_ERROR;
-    }
-    
-    int status_code;
-    char *connection = "close";
-    
-    // Preparar argumentos para as funções de processamento
-    char *argv[] = {"servidor", (char*)web_space, (char*)path, NULL};
-    
-    if (strcmp(metodo, "GET") == 0) {
-        status_code = process_GET(argv, connection);
-    } else if (strcmp(metodo, "HEAD") == 0) {
-        status_code = process_HEAD(argv, connection);
-    } else if (strcmp(metodo, "OPTIONS") == 0) {
-        status_code = process_OPTIONS(connection);
-    } else if (strcmp(metodo, "TRACE") == 0) {
-        status_code = process_TRACE(connection);
-    } else if (strcmp(metodo, "POST") == 0 || strcmp(metodo, "PUT") == 0) {
-        send_error_page(HTTP_NOT_IMPLEMENTED, connection, metodo);
-        status_code = HTTP_NOT_IMPLEMENTED;
-    } else {
-        send_error_page(HTTP_METHOD_NOT_ALLOWED, connection, metodo);
-        status_code = HTTP_METHOD_NOT_ALLOWED;
-    }
-    
-    free(metodo);
-    free(path);
-    return status_code;
 }
 
 
@@ -395,7 +406,7 @@ int main(int argc, char *argv[]) {
     printf("Máximo de threads: %d\n", max_threads);
 
     while (1) {
-        printf("Threads ativas: %d/%d\n", threads_ativas, max_threads);
+        //printf("Threads ativas: %d/%d\n", threads_ativas, max_threads);
 
         struct sockaddr_in endereco_cliente;
         char client_ip[INET_ADDRSTRLEN];

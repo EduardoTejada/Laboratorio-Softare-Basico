@@ -270,3 +270,24 @@ void registrar_requisicao_resposta(char *req_content, const char *resp_file,
     fprintf(reg, "=== FIM ===\n\n");
     fclose(reg);
 }
+
+void url_decode(const char* src, char* dest) {
+    char* p = dest;
+    while (*src) {
+        if (*src == '%') {
+            if (src[1] && src[2]) {
+                char hex[3] = {src[1], src[2], '\0'};
+                *p++ = (char)strtol(hex, NULL, 16);
+                src += 3;
+            } else {
+                *p++ = *src++;
+            }
+        } else if (*src == '+') {
+            *p++ = ' ';
+            src++;
+        } else {
+            *p++ = *src++;
+        }
+    }
+    *p = '\0';
+}
