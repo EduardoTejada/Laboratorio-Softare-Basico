@@ -1,23 +1,136 @@
-HTTP/1.1 404 Not Found
-Date: Tue, 02 Dec 2025 23:48:35 GMT
+HTTP/1.1 200 OK
+Date: Wed, 03 Dec 2025 02:57:08 GMT
 Server: Servidor HTTP ver. 0.1 de Eduardo
 Connection: close
-Content-Type: text/html; charset=utf-8
-Content-Length: 504
+Last-Modified: Wed, 03 Dec 2025 02:54:22 GMT
+Content-Length: 3670
+Content-Type: text/html
 
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-    <title>404 - Página Não Encontrada</title>
+
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  <title>Home Page</title>
+
+
 </head>
-<body>
-    <h1 class="error-code">404</h1>
-    <h2 class="error-title">404 - Página Não Encontrada</h2>
-    <div class="error-message">O recurso solicitado não foi encontrado no servidor.
-<br>Arquivo: ./meu-webspace///</div>
-    <div class="error-info">
-        <strong>Data:</strong> Tue, 02 Dec 2025 23:48:35 GMT<br>
-        <strong>Servidor:</strong> Servidor HTTP ver. 0.1 de Eduardo
-    </div>
+
+
+<body style="background-color: rgb(204, 204, 255); color: rgb(0, 0, 0);" alink="#000099" link="#000099" vlink="#990099">
+
+<div style="text-align: center;">
+<div style="text-align: center;">
+<h3><a href="http://www.fee.unicamp.br/"><img style="border: 0px solid ; width: 200px; height: 80px; float: right;" onmousemove="FEEC" alt="link para FEEC" src="feec.gif"></a></h3>
+
+<h3><br>
+
+</h3>
+
+<h3 style="color: rgb(51, 51, 255);">EA551: Laborat�rio de Programa��o de Software B�sico</h3>
+
+</div>
+
+<br>
+
+<p>
+<bold>
+Aten��o:
+</bold>
+ap�s extrair o conte�do do arquivo, execute o script shell "configura_permissoes.sh" para que sejam corrijidas as permiss�es dos arquivos e diret�rios do webspace.
+</p>
+
+<p>
+<bold>
+</bold>
+Este webspace precisa ser complementado com controle de acesso (.htaccess), arquivos de senhas e formul�rios para troca de senhas.
+</p>
+
+<hr style="width: 100%; height: 2px;">
+<p style="text-align: justify; background-color: transparent;">&nbsp;&nbsp;&nbsp;
+&nbsp;<span style="font-weight: bold;">Logotipos da
+Unicamp e da FEEC:</span></p>
+
+<div style="text-align: justify;">
+<ul>
+
+  <li><a href="./unicamp.gif">Formato gif</a></li>
+
+  <li><a href="./feec.gif">Formato gif</a></li>
+
+  <li><span style="text-decoration: underline;"><a href="unicamp.png">Formato png</a></span></li>
+
+  <li><span style="text-decoration: underline;"><a href="unicamp.jpg">Formato jpg</a></span></li>
+
+  <li><span style="text-decoration: underline;"><a href="unicamp.tif">Formato tif</a></span></li>
+
+  
+
+</ul>
+
+<br>
+
+<span style="background-color: transparent;">&nbsp;&nbsp;&nbsp;
+</span><span style="font-weight: bold; background-color: transparent;">Arquivos:</span><br>
+
+<ul>
+
+  <li><a href="teste.pdf">Arquivo pdf</a></li>
+
+  <li><a href="lab.zip">Arquivo zip</a></li>
+
+  <li><a href="a.txt">Arquivo txt</a></li>
+
+  <li><a href="welcome.html">Arquivo html</a></li>
+
+  <li><a href="teste.odt">Arquivo odt</a></li>
+
+</ul>
+
+<br>
+
+<span style="font-weight: bold;">&nbsp;&nbsp;&nbsp;
+Casos especiais:</span><br>
+
+<ul>
+
+  <li><a href="teste.txt">Arquivo sem permiss&atilde;o de leitura</a></li>
+
+  <li><a href="asdfg.html">Arquivo inexistente</a></li>
+
+  <li><a href="dir">Diret&oacute;rio sem permiss&atilde;o de execu&ccedil;&atilde;o</a></li>
+
+  <li><a href="dir/texto_de_teste.txt">Arquivo dentro do diret&oacute;rio acima que est� sem permiss&atilde;o de execu&ccedil;&atilde;o</a></li>
+
+  <li><a href="dir1">Diret&oacute;rio com index.html</a></li>
+
+  <li><a href="dir1/dir11">Diret&oacute;rio com index.html e protegido por .htaccess.</a></li>
+
+  <li><a href="dir1/dir11/dir111">Diret&oacute;rio com index.html e protegido por .htaccess distinto do anterior.</a></li>
+
+  <li><a href="dir2">Diret&oacute;rio com welcome.html</a></li>
+
+  <li><a href="dir3">Diret&oacute;rio com index.html sem permiss&atilde;o de leitura, mas com welcome.html leg�vel.</a></li>
+
+  <li><a href="dir4">Diret&oacute;rio&nbsp; com index.html e welcome.html sem permiss&atilde;o de leitura</a></li>
+
+  <li><a href="dir4/dir41">Diret&oacute;rio com index.html e protegido por .htaccess.</a></li>
+
+  <li><a href="dir4/dir41/dir411">Diret&oacute;rio com index.html, sem .htaccess, mas protegido pelo .htaccess do n�vel de cima.</a></li>
+
+  <li><a href="dir5">Diret&oacute;rio sem index ou welcome</a></li>
+
+  <li><a href="nova_senha.html">Formu&aacute;rio para troca de senha</a></li>
+
+</ul>
+
+<br>
+
+<hr style="width: 100%; height: 2px;"></div>
+
+<br>
+
+</div>
+
 </body>
 </html>

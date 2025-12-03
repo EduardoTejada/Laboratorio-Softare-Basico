@@ -364,6 +364,8 @@ char* get_content_type(char* filename) {
         return "image/png";
     else if (strcmp(ext, ".gif") == 0)
         return "image/gif";
+    else if (strcmp(ext, ".tif") == 0)
+        return "image/tif";
     else if (strcmp(ext, ".css") == 0)
         return "text/css";
     else if (strcmp(ext, ".js") == 0)
@@ -538,6 +540,7 @@ int process_TRACE(char* connection) {
     return HTTP_OK;
 }
 
+// Verifica a existência e retorna o caminho de um arquivo .htaccess dado um diretório específico
 int verificar_htaccess(const char* diretorio, char** realm, char** htpasswd_path) {
     char htaccess_path[4096];
     snprintf(htaccess_path, sizeof(htaccess_path), "%s/.htaccess", diretorio);
@@ -558,7 +561,7 @@ int verificar_htaccess(const char* diretorio, char** realm, char** htpasswd_path
             *separator = '\0';
             *realm = strdup(buffer);
             
-            // Resolver caminho relativo
+            // Montando caminho completo
             char* htpasswd_relative = separator + 1;
             char resolved_path[4096];
             
@@ -568,11 +571,10 @@ int verificar_htaccess(const char* diretorio, char** realm, char** htpasswd_path
             fprintf(stderr, "DEBUG: realm extraído='%s', htpasswd_path resolvido='%s'\n", *realm, *htpasswd_path);
         } else {
             // Formato simples: apenas o caminho para htpasswd
-            *realm = strdup("Espaço Protegido");
+            *realm = strdup("realm");
             *htpasswd_path = strdup(buffer);
 
-                        
-            // Resolver caminho relativo
+            // Montando caminho completo
             if (buffer[0] == '/') {
                 // Caminho absoluto
                 *htpasswd_path = strdup(buffer);
@@ -598,27 +600,28 @@ int verificar_htaccess(const char* diretorio, char** realm, char** htpasswd_path
 }
 
 int buscar_htaccess_recursivo(const char* caminho_completo, const char* webspace, char** realm, char** htpasswd_path) {
+    //fprintf(stderr, "DEBUG: caminho completo %s\n", caminho_completo);
+    //fprintf(stderr, "DEBUG: webspace %s\n", webspace);
     
-    fprintf(stderr, "DEBUG: caminho completo %s\n", caminho_completo);
-    fprintf(stderr, "DEBUG: webspace %s\n", webspace);
-    
+    // monta o caminho completo para oo recurso
     char caminho[4096];
     strncpy(caminho, caminho_completo, sizeof(caminho));
     caminho[sizeof(caminho)-1] = '\0';
-    fprintf(stderr, "DEBUG: caminho %s\n", caminho);
+    //fprintf(stderr, "DEBUG: caminho %s\n", caminho);
     
-    // Deixar somente o diretorio
+    // Deixar somente o caminho para o diretório
     char* ultima_barra = strrchr(caminho, '/');
     if (ultima_barra != NULL) {
         *ultima_barra = '\0';
     }
 
+    // Remove a barra no final caso houver
     ultima_barra = strrchr(webspace, '/');
     if (ultima_barra != NULL) {
         *ultima_barra = '\0';
     }
 
-    fprintf(stderr, "DEBUG: caminho %s\n", caminho);
+    //fprintf(stderr, "DEBUG: caminho %s\n", caminho);
     
     // Fora do webspace
     if (strlen(caminho) < strlen(webspace)) {
@@ -647,6 +650,7 @@ int buscar_htaccess_recursivo(const char* caminho_completo, const char* webspace
     return 0; // Nenhum .htaccess encontrado
 }
 
+// Verifica se um recurso está ou não protegido
 int verificar_protecao(const char* caminho_completo, const char* webspace, char** realm, char** htpasswd_path) {
     
     *realm = NULL;
@@ -687,6 +691,7 @@ void send_autentication_page(char* realm, char* connection) {
     fflush(stdout);
 }
 
+// Extrai os dados (usuário e senha) preenchidos com Basic Authentication da lista ligada do parser
 int extrair_credenciais_da_lista(CampoNode* lista_campos, char** usuario, char** senha) {
     CampoNode* campo = lista_campos;
     
@@ -768,6 +773,7 @@ int verificar_credenciais(const char* usuario, const char* senha, const char* ht
     
     char linha[256];
     
+    // Itera pelas linhas do .htpasswd
     while (fgets(linha, sizeof(linha), htpasswd_file)) {
         // Remover quebra de linha
         linha[strcspn(linha, "\r\n")] = '\0';
@@ -777,11 +783,12 @@ int verificar_credenciais(const char* usuario, const char* senha, const char* ht
         if (separator == NULL) continue;
         
         *separator = '\0';
-        char* user_file = linha;
-        char* pass_crypt_file = separator + 1;
+        char* user_file = linha;                // nome de usuário da linha atual
+        char* pass_crypt_file = separator + 1;  // senha criptografada
         
         fprintf(stderr, "DEBUG: Verificando usuário: %s\n", user_file);
         
+        // Verifica encontrou o usuario
         if (strcmp(user_file, usuario) == 0) {
             // Criptografar a senha recebida com o mesmo salt do arquivo
             char* senha_criptografada = crypt(senha, pass_crypt_file);
@@ -789,12 +796,13 @@ int verificar_credenciais(const char* usuario, const char* senha, const char* ht
             fprintf(stderr, "DEBUG: Senha criptografada: %s\n", senha_criptografada);
             fprintf(stderr, "DEBUG: Senha no arquivo: %s\n", pass_crypt_file);
             
+            // Verifica se as senhas coincidem
             if (senha_criptografada != NULL && strcmp(senha_criptografada, pass_crypt_file) == 0) {
                 fclose(htpasswd_file);
-                return 1; // Credenciais válidas
+                return 1;
             } else {
                 fclose(htpasswd_file);
-                return 0; // Senha incorreta
+                return 0;
             }
         }
     }
@@ -813,6 +821,7 @@ int process_GET(char* caminhos[], char* connection, CampoNode* lista_campos){
     char buf[4096];
     ssize_t bytes_read;
     
+    // Monta o caminho completo para o recurso: webspace + path
     strncpy(home, caminhos[1], 4095);
     home[4095] = '\0';
     strncpy(target_inicial, caminhos[2], 4095);
@@ -828,9 +837,11 @@ int process_GET(char* caminhos[], char* connection, CampoNode* lista_campos){
         char* usuario = NULL;
         char* senha = NULL;
 
+        // Procura o campo de credenciais na lista liaga do parser
         if (extrair_credenciais_da_lista(lista_campos, &usuario, &senha)) {
             fprintf(stderr, "DEBUG: Credenciais encontradas na lista - Verificando...\n");
             
+            // Se achou verifica se o usuário existe e se a senha está correta
             if (verificar_credenciais(usuario, senha, htpasswd_path)) {
                 fprintf(stderr, "DEBUG: Autenticação BEM-SUCEDIDA para usuário: %s\n", usuario);
                 // Autenticação bem-sucedida - continuar com o processamento normal
@@ -865,6 +876,7 @@ int process_GET(char* caminhos[], char* connection, CampoNode* lista_campos){
 
     struct stat statbuf;
 
+    // verifica se o arquivo existe
     if(stat(target_completo, &statbuf) == -1){
         char additional_info[256];
         snprintf(additional_info, sizeof(additional_info), "Arquivo: %s", target_completo);
@@ -872,6 +884,7 @@ int process_GET(char* caminhos[], char* connection, CampoNode* lista_campos){
         return HTTP_NOT_FOUND;
     }
     
+    // verifica o acesso ao arquivo
     if(access(target_completo, R_OK) != 0){
         char additional_info[256];
         snprintf(additional_info, sizeof(additional_info), "Arquivo: %s (Sem permissão de leitura)", target_completo);
@@ -890,6 +903,7 @@ int process_GET(char* caminhos[], char* connection, CampoNode* lista_campos){
                 return HTTP_FORBIDDEN;
             }
             
+            // Escreve a resposta até que tenha enviado tudo
             while ((bytes_read = read(fd, buf, sizeof(buf))) > 0) {
                 write(STDOUT_FILENO, buf, bytes_read);
             }
@@ -897,6 +911,7 @@ int process_GET(char* caminhos[], char* connection, CampoNode* lista_campos){
             return HTTP_OK;
 
         case S_IFDIR: // Diretório
+            // Verifica de execução
             if(access(target_completo, X_OK) != 0){
                 char additional_info[256];
                 snprintf(additional_info, sizeof(additional_info), "Diretório: %s (Sem permissão de execução)", target_completo);
@@ -914,17 +929,20 @@ int process_GET(char* caminhos[], char* connection, CampoNode* lista_campos){
             int index_encontrado = 0, welcome_encontrado = 0;
             int index_permitido = 0, welcome_permitido = 0;
             
+            // verifica se existe um index.html
             if(stat(target_index, &statbuf_index) != -1){
                 index_encontrado = 1;
                 if(access(target_index, R_OK) == 0)
                     index_permitido = 1;
             }
+            // verifica se existe um welcome.html
             if(stat(target_welcome, &statbuf_welcome) != -1){
                 welcome_encontrado = 1;
                 if(access(target_welcome, R_OK) == 0)
                     welcome_permitido = 1;
             }
 
+            // se não existir nenhum dos dois retorna erro 404
             if(index_encontrado == 0 && welcome_encontrado == 0) {
                 char additional_info[256];
                 snprintf(additional_info, sizeof(additional_info), "Diretório: %s (index.html ou welcome.html não encontrados)", target_completo);
@@ -932,6 +950,7 @@ int process_GET(char* caminhos[], char* connection, CampoNode* lista_campos){
                 return HTTP_NOT_FOUND;
             }
             
+            // se existir algum mas não houver permissão retorna erro 403
             if(index_permitido == 0 && welcome_permitido == 0) {
                 char additional_info[256];
                 snprintf(additional_info, sizeof(additional_info), "Diretório: %s (Sem permissão de leitura nos arquivos índice)", target_completo);
@@ -939,7 +958,7 @@ int process_GET(char* caminhos[], char* connection, CampoNode* lista_campos){
                 return HTTP_FORBIDDEN;
             }
             
-            // Preferência: index.html > welcome.html
+            // declaração da preferência index.html > welcome.html
             char* arquivo_escolhido = target_index;
             struct stat* statbuf_escolhido = &statbuf_index;
             
@@ -948,6 +967,7 @@ int process_GET(char* caminhos[], char* connection, CampoNode* lista_campos){
                 statbuf_escolhido = &statbuf_welcome;
             }
             
+            // envia o cabeçalho da resposta
             send_headers(HTTP_OK, connection, statbuf_escolhido, arquivo_escolhido, 0);
             
             if((fd = open(arquivo_escolhido, O_RDONLY)) == -1) {
@@ -957,13 +977,14 @@ int process_GET(char* caminhos[], char* connection, CampoNode* lista_campos){
                 return HTTP_FORBIDDEN;
             }
             
+            // envia o corpo da resposta no loop até que tenha enviado tudo
             while ((bytes_read = read(fd, buf, sizeof(buf))) > 0) {
                 write(STDOUT_FILENO, buf, bytes_read);
             }
             close(fd);
             return HTTP_OK;
         
-        default:
+        default: // nem arquivo regular nem diretório
             char additional_info[256];
             snprintf(additional_info, sizeof(additional_info), "Recurso: %s (Tipo de arquivo não suportado)", target_completo);
             send_error_page(HTTP_FORBIDDEN, connection, additional_info);
@@ -977,6 +998,7 @@ int process_HEAD(char* caminhos[], char* connection) {
     char target_inicial[4096];
     char target_completo[4096];
     
+    // Monta o caminho completo para o recurso: webspace + path
     strncpy(home, caminhos[1], 4095);
     home[4095] = '\0';
     strncpy(target_inicial, caminhos[2], 4095);

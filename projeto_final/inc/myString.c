@@ -191,6 +191,7 @@ ParametroNode* processarParametros(char *texto_parametros) {
 }
 
 // Função para extrair método e path da requisição
+// GET /index.html HTTP/1.1\r\n... => metodo = "GET", path = "/index.html"
 int extrair_metodo_path(char *requisicao, char **metodo, char **path) {
     // Fazer uma cópia para não modificar o original
     char *copia = strdup(requisicao);

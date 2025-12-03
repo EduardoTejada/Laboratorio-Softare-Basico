@@ -25,16 +25,12 @@ extern int yyparse();
 // Definição das variáveis globais
 CampoNode *lista_completa = NULL;
 CampoNode **ultimo = &lista_completa;
-/*typedef struct {
-    CampoNode *lista_completa;
-    CampoNode **ultimo;
-} parser_context_t;*/
 
-// MUTEX PARA PROTEGER O PARSER
+// Mutex para proteger o parser
 pthread_mutex_t parser_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 // Variáveis do programa
-char *web_space = "./meu-webspace/";
+char *web_space = "./webspace_para_testes/";
 char *arquivo_req = "requisicao.txt";
 char *arquivo_resp = "resposta.txt";
 char *arquivo_registro = "registro.txt";
@@ -148,7 +144,7 @@ void processar_requisicao_completa(int soquete_cliente, char *requisicao) {
     printf("%s\n", requisicao);
     printf("[Thread %ld] === FIM DA REQUISIÇÃO ===\n\n", pthread_self());
     
-    // PROTEGER O PARSER COM MUTEX
+    // Proteger o parser com mutex
     pthread_mutex_lock(&parser_mutex);
 
     // Configurar o parser para ler da string
@@ -220,20 +216,14 @@ void conectar_na_internet(char *endereco_ip, int porta, int* soquete, struct soc
     endereco_servidor->sin_family = AF_INET;
     endereco_servidor->sin_port = htons(porta);
     
-    // Decidir se usa IP específico ou qualquer interface
-    if (strcmp(endereco_ip, "0.0.0.0") == 0) {
-        endereco_servidor->sin_addr.s_addr = INADDR_ANY;
-        printf("Servidor escutando em todas as interfaces na porta %d\n", porta);
-    } else {
-        if (inet_aton(endereco_ip, &endereco_servidor->sin_addr) == 0) {
-            fprintf(stderr, "Endereço IP inválido: %s\n", endereco_ip);
-            exit(1);
-        }
-        printf("Servidor escutando em %s:%d\n", endereco_ip, porta);
+    // testa endereço
+    if (inet_aton(endereco_ip, &endereco_servidor->sin_addr) == 0) {
+        fprintf(stderr, "Endereço IP inválido: %s\n", endereco_ip);
+        exit(1);
     }
+    printf("Servidor escutando em %s:%d\n", endereco_ip, porta);
 
-    printf("DEBUG: Tentando bind em %s:%d\n", endereco_ip, porta);
-
+    // tentando bind
     if (bind(*soquete, (struct sockaddr*)endereco_servidor, sizeof(*endereco_servidor)) < 0) {
         perror("Erro no bind");
         fprintf(stderr, "IP: %s, Porta: %d\n", endereco_ip, porta);
@@ -242,6 +232,7 @@ void conectar_na_internet(char *endereco_ip, int porta, int* soquete, struct soc
 
     printf("DEBUG: Bind bem-sucedido em %s:%d\n", endereco_ip, porta);
 
+    // começa a escutar a porta
     if (listen(*soquete, 5) < 0) {
         perror("Erro no listen");
         exit(1);
@@ -312,8 +303,7 @@ void* thread_trata_conexao(void* arg) {
     if (bytes_lidos > 0) {
         requisicao[bytes_lidos] = '\0';
         printf("[Thread %ld] Dados recebidos (%zd bytes) de %s:%d\n", 
-               pthread_self(), bytes_lidos, data->client_ip, data->client_port);
-        
+               pthread_self(), bytes_lidos, data->client_ip, data->client_port);    
         processar_requisicao_completa(soquete_cliente, requisicao);
     } else {
         printf("[Thread %ld] Erro na leitura dos dados de %s:%d\n", 
@@ -358,7 +348,7 @@ int aceitar_conexao_simples(int soquete_servidor) {
     return soquete_cliente;
 }
 
-// Aceitação com preenchimento correto dos dados do cliente
+// Aceitação com preenchimento dos dados do cliente
 int aceitar_conexao_completa(int soquete_servidor, struct sockaddr_in *endereco_cliente, char *client_ip, int *client_port) {
     socklen_t tam_endereco = sizeof(*endereco_cliente);
     
@@ -366,6 +356,7 @@ int aceitar_conexao_completa(int soquete_servidor, struct sockaddr_in *endereco_
     int flags = fcntl(soquete_servidor, F_GETFL, 0);
     fcntl(soquete_servidor, F_SETFL, flags | O_NONBLOCK);
     
+    // Aceitar a conexão com cliente
     int soquete_cliente = accept(soquete_servidor, (struct sockaddr*)endereco_cliente, &tam_endereco);
     
     // Restaurar modo bloqueante
@@ -406,8 +397,7 @@ int main(int argc, char *argv[]) {
     printf("Máximo de threads: %d\n", max_threads);
 
     while (1) {
-        //printf("Threads ativas: %d/%d\n", threads_ativas, max_threads);
-
+        //printf("DEBUG: Threads ativas: %d/%d\n", threads_ativas, max_threads);
         struct sockaddr_in endereco_cliente;
         char client_ip[INET_ADDRSTRLEN];
         int client_port;
@@ -421,18 +411,21 @@ int main(int argc, char *argv[]) {
             continue;
         }
         
+        // conexão com cliente bem-sucedida
         printf("=== NOVA CONEXÃO de %s:%d ===\n", client_ip, client_port);
 
-        // VERIFICAÇÃO DE LIMITE CORRIGIDA (sem race condition)
+        // verifica limite de threads
         pthread_mutex_lock(&threads_mutex);
         if (threads_ativas >= max_threads) {
             pthread_mutex_unlock(&threads_mutex);
+            // envia resposta para o cliente
             printf("LIMITE ATINGIDO: %d threads. Rejeitando conexão.\n", threads_ativas);
             const char *error_msg = "HTTP/1.1 503 Service Unavailable\r\n\r\n";
             write(soquete_cliente, error_msg, strlen(error_msg));
             close(soquete_cliente);
             continue;
         }
+        // não chegou no limite de threads
         threads_ativas++;
         pthread_mutex_unlock(&threads_mutex);
 
@@ -447,18 +440,19 @@ int main(int argc, char *argv[]) {
             continue;
         }
         
+        // preenche dados para a thread
         thread_data->soquete_cliente = soquete_cliente;
         strncpy(thread_data->client_ip, client_ip, INET_ADDRSTRLEN);
         thread_data->client_port = client_port;
         
-        // CRIAR THREAD
+        // cria a thread
         pthread_t thread_id;
         int rc = pthread_create(&thread_id, NULL, thread_trata_conexao, thread_data);
         
         if (rc == 0) {
             printf("[Main] Thread %ld criada. Threads ativas: %d/%d\n", 
                    thread_id, threads_ativas, max_threads);
-            pthread_detach(thread_id);
+            pthread_detach(thread_id); // evita zombies
         } else {
             perror("Erro ao criar thread");
             pthread_mutex_lock(&threads_mutex);
