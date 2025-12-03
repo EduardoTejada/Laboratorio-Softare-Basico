@@ -81,7 +81,7 @@ void yylex_destroy(void);
 
 extern char* yytext;
 
-// Declaração como extern (definição está em servidor.c)
+// Declaração como extern (definição está no servidor)
 extern CampoNode *lista_completa;
 extern CampoNode **ultimo;
 

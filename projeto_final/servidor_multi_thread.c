@@ -13,6 +13,8 @@
 #include <errno.h>
 #include <pthread.h>
 #include "inc/myString.h"
+#include <sys/time.h>
+#include <sys/types.h>
 
 /* declarações vindas do Flex */
 typedef struct yy_buffer_state *YY_BUFFER_STATE;
@@ -257,6 +259,11 @@ void* thread_trata_conexao(void* arg) {
     char requisicao[8192];
     memset(requisicao, 0, sizeof(requisicao));
     
+    struct timeval tv;
+    tv.tv_sec = 5;  // 5 segundos de timeout
+    tv.tv_usec = 0;
+    setsockopt(soquete_cliente, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof tv);
+
     // Ler requisição do cliente
     ssize_t bytes_lidos;
     do {
@@ -284,31 +291,6 @@ void* thread_trata_conexao(void* arg) {
     
     free(data);
     pthread_exit(NULL);
-}
-
-int aceitar_conexao_simples(int soquete_servidor) {
-    struct sockaddr_in endereco_cliente;
-    socklen_t tam_endereco = sizeof(endereco_cliente);
-    
-    // Aceitar sem bloquear - configurar socket como não-bloqueante
-    int flags = fcntl(soquete_servidor, F_GETFL, 0);
-    fcntl(soquete_servidor, F_SETFL, flags | O_NONBLOCK);
-    
-    int soquete_cliente = accept(soquete_servidor, (struct sockaddr*)&endereco_cliente, &tam_endereco);
-    
-    // Restaurar modo bloqueante
-    fcntl(soquete_servidor, F_SETFL, flags);
-    
-    if (soquete_cliente < 0) {
-        if (errno == EAGAIN || errno == EWOULDBLOCK) {
-            // Não há conexões pendentes - isso é normal
-            return -1;
-        }
-        perror("Erro no accept");
-        return -1;
-    }
-    
-    return soquete_cliente;
 }
 
 // Aceitação com preenchimento dos dados do cliente
