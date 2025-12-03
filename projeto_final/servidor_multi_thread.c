@@ -260,7 +260,7 @@ void* thread_trata_conexao(void* arg) {
     memset(requisicao, 0, sizeof(requisicao));
     
     struct timeval tv;
-    tv.tv_sec = 5;  // 5 segundos de timeout
+    tv.tv_sec = 4;  // 4 segundos de timeout
     tv.tv_usec = 0;
     setsockopt(soquete_cliente, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof tv);
 
