@@ -190,7 +190,7 @@ int process_POST(char* caminhos[], char* connection, CampoNode* lista_campos, co
         return processar_troca_senha(target_completo, caminhos, connection, lista_campos, corpo_post);
     }
     
-    // Outros tipos de POST podem ser implementados aqui
+    // Se não for troca de senha não está implementado
     send_error_page(HTTP_NOT_IMPLEMENTED, connection, "Funcionalidade POST não implementada");
     return HTTP_NOT_IMPLEMENTED;
 }
