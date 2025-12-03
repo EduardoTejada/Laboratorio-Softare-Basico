@@ -992,8 +992,9 @@ int process_GET(char* caminhos[], char* connection, CampoNode* lista_campos){
     }
 }
 
+
 // Função para processar requisição HEAD (igual ao GET, mas sem corpo)
-int process_HEAD(char* caminhos[], char* connection) {
+int process_HEAD(char* caminhos[], char* connection, CampoNode* lista_campos){
     char home[4096];
     char target_inicial[4096];
     char target_completo[4096];
@@ -1004,80 +1005,143 @@ int process_HEAD(char* caminhos[], char* connection) {
     strncpy(target_inicial, caminhos[2], 4095);
     target_inicial[4095] = '\0';
     
-    if (strcmp(target_inicial, "") == 0 || strcmp(target_inicial, "/") == 0) {
-        strcpy(target_inicial, "index.html");
-    }
-    else if (target_inicial[0] == '/') {
-        memmove(target_inicial, target_inicial + 1, strlen(target_inicial));
-    }
-    
-    int is_directory = 0;
-    if (target_inicial[strlen(target_inicial)-1] == '/') {
-        is_directory = 1;
-        target_inicial[strlen(target_inicial)-1] = '\0'; // Remover barra final
-    }
-    
     snprintf(target_completo, sizeof(target_completo), "%s/%s", home, target_inicial);
+
+    char* realm = NULL;
+    char* htpasswd_path = NULL;
     
-    printf("DEBUG process_HEAD: Home='%s', Target='%s', Completo='%s', IsDir=%d\n", 
-           home, target_inicial, target_completo, is_directory);
+    int protegido = verificar_protecao(target_completo, home, &realm, &htpasswd_path);
+    if(protegido){
+        char* usuario = NULL;
+        char* senha = NULL;
+
+        // Procura o campo de credenciais na lista liaga do parser
+        if (extrair_credenciais_da_lista(lista_campos, &usuario, &senha)) {
+            fprintf(stderr, "DEBUG: Credenciais encontradas na lista - Verificando...\n");
+            
+            // Se achou verifica se o usuário existe e se a senha está correta
+            if (verificar_credenciais(usuario, senha, htpasswd_path)) {
+                fprintf(stderr, "DEBUG: Autenticação BEM-SUCEDIDA para usuário: %s\n", usuario);
+                // Autenticação bem-sucedida - continuar com o processamento normal
+                free(usuario);
+                free(senha);
+            } else {
+                fprintf(stderr, "DEBUG: Autenticação FALHOU para usuário: %s\n", usuario);
+                // Credenciais inválidas
+                send_autentication_page(realm, connection);
+                free(usuario);
+                free(senha);
+                free(realm);
+                free(htpasswd_path);
+                return 401;
+            }
+        } else {
+            fprintf(stderr, "DEBUG: Nenhuma credencial encontrada na lista - solicitando autenticação\n");
+            // Nenhuma credencial enviada - solicitar autenticação
+            send_autentication_page(realm, connection);
+            free(realm);
+            free(htpasswd_path);
+            return 401;
+        }
+    } else {
+        fprintf(stderr, "DEBUG: Recurso NÃO protegido por .htaccess\n");
+    }
+
+    if (protegido) {
+        free(realm);
+        free(htpasswd_path);
+    }
 
     struct stat statbuf;
 
+    // verifica se o arquivo existe
     if(stat(target_completo, &statbuf) == -1){
-        if (is_directory) {
-            char target_index[4096];
-            snprintf(target_index, sizeof(target_index), "%s/index.html", target_completo);
-            if(stat(target_index, &statbuf) != -1){
-                // Encontrou index.html no diretório
-                strcpy(target_completo, target_index);
-            } else {
-                char target_welcome[4096];
-                snprintf(target_welcome, sizeof(target_welcome), "%s/welcome.html", target_completo);
-                if(stat(target_welcome, &statbuf) != -1){
-                    // Encontrou welcome.html no diretório
-                    strcpy(target_completo, target_welcome);
-                } else {
-                    send_error_page(HTTP_NOT_FOUND, connection, target_completo);
-                    return HTTP_NOT_FOUND;
-                }
-            }
-        } else {
-            send_error_page(HTTP_NOT_FOUND, connection, target_completo);
-            return HTTP_NOT_FOUND;
-        }
+        char additional_info[256];
+        snprintf(additional_info, sizeof(additional_info), "Arquivo: %s", target_completo);
+        send_error_page(HTTP_NOT_FOUND, connection, additional_info);
+        return HTTP_NOT_FOUND;
     }
     
+    // verifica o acesso ao arquivo
     if(access(target_completo, R_OK) != 0){
-        send_error_page(HTTP_FORBIDDEN, connection, target_completo);
+        char additional_info[256];
+        snprintf(additional_info, sizeof(additional_info), "Arquivo: %s (Sem permissão de leitura)", target_completo);
+        send_error_page(HTTP_FORBIDDEN, connection, additional_info);
         return HTTP_FORBIDDEN;
     }
 
-    if (is_directory && S_ISREG(statbuf.st_mode)) {
-        // Já encontramos um arquivo regular, usar ele
-    } else if (S_ISDIR(statbuf.st_mode)) {
-        // É um diretório, procurar index.html ou welcome.html
-        char target_index[4096];
-        char target_welcome[4096];
-        
-        snprintf(target_index, sizeof(target_index), "%s/index.html", target_completo);
-        snprintf(target_welcome, sizeof(target_welcome), "%s/welcome.html", target_completo);
-        
-        struct stat statbuf_index, statbuf_welcome;
-        int index_encontrado = 0, welcome_encontrado = 0;
-        
-        if(stat(target_index, &statbuf_index) != -1 && access(target_index, R_OK) == 0){
-            strcpy(target_completo, target_index);
-            statbuf = statbuf_index;
-        } else if(stat(target_welcome, &statbuf_welcome) != -1 && access(target_welcome, R_OK) == 0){
-            strcpy(target_completo, target_welcome);
-            statbuf = statbuf_welcome;
-        } else {
-            send_error_page(HTTP_NOT_FOUND, connection, target_completo);
-            return HTTP_NOT_FOUND;
-        }
-    }
+    switch (statbuf.st_mode & S_IFMT){
+        case S_IFREG: // Arquivo regular
+            send_headers(HTTP_OK, connection, &statbuf, target_completo, 0);
+            
+            return HTTP_OK;
 
-    send_headers(HTTP_OK, connection, &statbuf, target_completo, 1);
-    return HTTP_OK;
+        case S_IFDIR: // Diretório
+            // Verifica de execução
+            if(access(target_completo, X_OK) != 0){
+                char additional_info[256];
+                snprintf(additional_info, sizeof(additional_info), "Diretório: %s (Sem permissão de execução)", target_completo);
+                send_error_page(HTTP_FORBIDDEN, connection, additional_info);
+                return HTTP_FORBIDDEN;
+            }
+
+            char target_welcome[256];
+            char target_index[256];
+            struct stat statbuf_index, statbuf_welcome;
+            
+            snprintf(target_welcome, sizeof(target_welcome), "%s/welcome.html", target_completo);
+            snprintf(target_index, sizeof(target_index), "%s/index.html", target_completo);
+
+            int index_encontrado = 0, welcome_encontrado = 0;
+            int index_permitido = 0, welcome_permitido = 0;
+            
+            // verifica se existe um index.html
+            if(stat(target_index, &statbuf_index) != -1){
+                index_encontrado = 1;
+                if(access(target_index, R_OK) == 0)
+                    index_permitido = 1;
+            }
+            // verifica se existe um welcome.html
+            if(stat(target_welcome, &statbuf_welcome) != -1){
+                welcome_encontrado = 1;
+                if(access(target_welcome, R_OK) == 0)
+                    welcome_permitido = 1;
+            }
+
+            // se não existir nenhum dos dois retorna erro 404
+            if(index_encontrado == 0 && welcome_encontrado == 0) {
+                char additional_info[256];
+                snprintf(additional_info, sizeof(additional_info), "Diretório: %s (index.html ou welcome.html não encontrados)", target_completo);
+                send_error_page(HTTP_NOT_FOUND, connection, additional_info);
+                return HTTP_NOT_FOUND;
+            }
+            
+            // se existir algum mas não houver permissão retorna erro 403
+            if(index_permitido == 0 && welcome_permitido == 0) {
+                char additional_info[256];
+                snprintf(additional_info, sizeof(additional_info), "Diretório: %s (Sem permissão de leitura nos arquivos índice)", target_completo);
+                send_error_page(HTTP_FORBIDDEN, connection, additional_info);
+                return HTTP_FORBIDDEN;
+            }
+            
+            // declaração da preferência index.html > welcome.html
+            char* arquivo_escolhido = target_index;
+            struct stat* statbuf_escolhido = &statbuf_index;
+            
+            if(!index_permitido || (welcome_permitido && !index_encontrado)) {
+                arquivo_escolhido = target_welcome;
+                statbuf_escolhido = &statbuf_welcome;
+            }
+            
+            // envia o cabeçalho da resposta
+            send_headers(HTTP_OK, connection, statbuf_escolhido, arquivo_escolhido, 1);
+            
+            return HTTP_OK;
+        
+        default: // nem arquivo regular nem diretório
+            char additional_info[256];
+            snprintf(additional_info, sizeof(additional_info), "Recurso: %s (Tipo de arquivo não suportado)", target_completo);
+            send_error_page(HTTP_FORBIDDEN, connection, additional_info);
+            return HTTP_FORBIDDEN;
+    }
 }

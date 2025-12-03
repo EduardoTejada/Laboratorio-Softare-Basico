@@ -34,7 +34,7 @@ void send_simple_headers(int status, char* connection, long content_length, char
 int process_OPTIONS(char* connection);
 int process_TRACE(char* connection);
 int process_GET(char* caminhos[], char* connection, CampoNode* lista_campos);
-int process_HEAD(char* caminhos[], char* connection);
+int process_HEAD(char* caminhos[], char* connection, CampoNode* lista_campos);
 int process_POST(char* caminhos[], char* connection, CampoNode* lista_campos, const char* corpo_post);
 
 #endif /* PROCESSAR_REQUISICOES_H */

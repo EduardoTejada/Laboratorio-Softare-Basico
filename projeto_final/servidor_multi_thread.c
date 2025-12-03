@@ -45,7 +45,7 @@ pthread_mutex_t threads_mutex = PTHREAD_MUTEX_INITIALIZER;
 void send_error_page(int status, char* connection, char* additional_info);
 int process_GET(char* caminhos[], char* connection, CampoNode* lista_campos);
 int process_POST(char* caminhos[], char* connection, CampoNode* lista_campos, const char* corpo_post);
-int process_HEAD(char* caminhos[], char* connection);
+int process_HEAD(char* caminhos[], char* connection, CampoNode* lista_campos);
 int process_OPTIONS(char* connection);
 int process_TRACE(char* connection);
 
@@ -114,7 +114,7 @@ int processar_requisicao(char *requisicao, const char *web_space, const char *ar
     if (strcmp(metodo, "GET") == 0) {
         status_code = process_GET(argv, connection, lista_campos);
     } else if (strcmp(metodo, "HEAD") == 0) {
-        status_code = process_HEAD(argv, connection);
+        status_code = process_HEAD(argv, connection, lista_campos);
     } else if (strcmp(metodo, "OPTIONS") == 0) {
         status_code = process_OPTIONS(connection);
     } else if (strcmp(metodo, "TRACE") == 0) {
