@@ -10,7 +10,6 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
-#include <poll.h>
 #include <errno.h>
 #include <pthread.h>
 #include "inc/myString.h"
@@ -29,6 +28,14 @@ CampoNode **ultimo = &lista_completa;
 // Mutex para proteger o parser
 pthread_mutex_t parser_mutex = PTHREAD_MUTEX_INITIALIZER;
 
+// Estrutura para passar dados para a thread
+typedef struct {
+    int soquete_cliente;
+    char client_ip[INET_ADDRSTRLEN];
+    int client_port;
+} thread_data_t;
+
+
 // Variáveis do programa
 char *web_space = "./webspace_para_testes/";
 char *arquivo_req = "requisicao.txt";
@@ -36,7 +43,6 @@ char *arquivo_resp = "resposta.txt";
 char *arquivo_registro = "registro.txt";
 
 // Configuração de multithreading
-//#define MAX_THREADS 64  // Número máximo de threads
 int max_threads = 64;
 int threads_ativas = 0; // Contador de threads ativas
 pthread_mutex_t threads_mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -106,7 +112,7 @@ int processar_requisicao(char *requisicao, const char *web_space, const char *ar
     }
     
     int status_code;
-    char *connection = "close";
+    char *connection = "keep-alive";
     
     // Preparar argumentos para as funções de processamento
     char *argv[] = {"servidor", (char*)web_space, (char*)path, NULL};
@@ -239,49 +245,6 @@ void conectar_na_internet(char *endereco_ip, int porta, int* soquete, struct soc
     }
 }
 
-// Aceitar conexão com timeout usando POLL
-int aceitar_com_timeout_poll(int soquete_servidor, int timeout_segundos) {
-    struct pollfd fds[1];
-    int resultado;
-    
-    // Configurar estrutura poll
-    fds[0].fd = soquete_servidor;
-    fds[0].events = POLLIN;  // Esperar por dados para leitura
-    fds[0].revents = 0;
-    
-    printf("[POLL] Aguardando conexão (timeout: %d segundos)...\n", timeout_segundos);
-    
-    // Esperar por atividade no socket com timeout
-    resultado = poll(fds, 1, timeout_segundos * 1000);
-    
-    if (resultado == -1) {
-        // Verificar se foi interrupção por sinal (EINTR)
-        if (errno == EINTR) {
-            printf("[POLL] Chamada interrompida por sinal (EINTR), reiniciando...\n");
-            return -3; // Código especial para EINTR
-        }
-        perror("[POLL] Erro no poll");
-        return -1;
-    } else if (resultado == 0) {
-        printf("[POLL] Timeout de %d segundos - nenhuma conexão recebida\n", timeout_segundos);
-        return -2; // Código especial para timeout
-    }
-    
-    // Verificar se o socket está realmente pronto para leitura
-    if (fds[0].revents & POLLIN) {
-        printf("[POLL] Socket pronto para aceitar conexão\n");
-        return 1;
-    }
-    
-    return -1;
-}
-
-// Estrutura para passar dados para a thread
-typedef struct {
-    int soquete_cliente;
-    char client_ip[INET_ADDRSTRLEN];
-    int client_port;
-} thread_data_t;
 
 // Função executada por cada thread para tratar a conexão
 void* thread_trata_conexao(void* arg) {

@@ -1,7 +1,7 @@
 # Servidor Multithread
 
 ## Compilação
-make thread
+make
 
 ## Execução
 ./servidor_multi_thread [endereco_IP] [porta] [max_threads]

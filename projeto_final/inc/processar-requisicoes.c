@@ -586,8 +586,6 @@ int verificar_htaccess(const char* diretorio, char** realm, char** htpasswd_path
             }
             
             fprintf(stderr, "DEBUG: Formato simples - realm='%s', htpasswd_path='%s'\n", *realm, *htpasswd_path);
-
-            
         }
     } else {
         fprintf(stderr, "DEBUG: .htaccess vazio ou erro de leitura\n");
@@ -603,7 +601,7 @@ int buscar_htaccess_recursivo(const char* caminho_completo, const char* webspace
     //fprintf(stderr, "DEBUG: caminho completo %s\n", caminho_completo);
     //fprintf(stderr, "DEBUG: webspace %s\n", webspace);
     
-    // monta o caminho completo para oo recurso
+    // monta o caminho completo para o recurso
     char caminho[4096];
     strncpy(caminho, caminho_completo, sizeof(caminho));
     caminho[sizeof(caminho)-1] = '\0';
