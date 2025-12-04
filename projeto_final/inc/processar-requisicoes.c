@@ -301,6 +301,16 @@ int processar_troca_senha(char* target_completo, char* caminhos[], char* connect
         free(htpasswd_path);
         return HTTP_BAD_REQUEST;
     }
+
+    // Verificar o tamanho da senha
+    if (strlen(dados->senha_nova1) < 8) {
+        fprintf(stderr, "DEBUG: A nova senha precisa ter no mínimo caracteres\n", dados->senha_nova1, dados->senha_nova2);
+        enviar_pagina_erro_troca_senha("A nova senha precisa ter no mínimo caracteres", connection);
+        liberar_dados_troca_senha(dados);
+        free(realm);
+        free(htpasswd_path);
+        return HTTP_BAD_REQUEST;
+    }
     
     // Verificar se o arquivo de senhas existe e é gravável
     if (access(htpasswd_path, F_OK) != 0) {
@@ -607,39 +617,21 @@ int buscar_htaccess_recursivo(const char* caminho_completo, const char* webspace
     caminho[sizeof(caminho)-1] = '\0';
     //fprintf(stderr, "DEBUG: caminho %s\n", caminho);
     
-    // Deixar somente o caminho para o diretório
-    char* ultima_barra = strrchr(caminho, '/');
-    if (ultima_barra != NULL) {
-        *ultima_barra = '\0';
-    }
-
-    // Remove a barra no final caso houver
-    ultima_barra = strrchr(webspace, '/');
-    if (ultima_barra != NULL) {
-        *ultima_barra = '\0';
-    }
-
-    //fprintf(stderr, "DEBUG: caminho %s\n", caminho);
-    
-    // Fora do webspace
-    if (strlen(caminho) < strlen(webspace)) {
-        return 0;
-    }
-
     // Procurar .htaccess no diretório atual
     if (verificar_htaccess(caminho, realm, htpasswd_path)) {
         return 1;
     }
 
-    // Se chegamos à raiz do webspace, parar a busca
-    if (strcmp(caminho, webspace) == 0) {
-        return 0; // Nenhum .htaccess encontrado
+    // Fora do webspace
+    if (strlen(caminho) < strlen(webspace)) {
+        return 0;
     }
-    
+
+
     // Subir um nível no diretório
-    char* barra_anterior = strrchr(caminho, '/');
-    if (barra_anterior != NULL) {
-        *barra_anterior = '\0';
+    char* ultima_barra = strrchr(caminho, '/');
+    if (ultima_barra != NULL) {
+        *ultima_barra = '\0';
         
         // Continuar busca recursivamente
         return buscar_htaccess_recursivo(caminho, webspace, realm, htpasswd_path);
